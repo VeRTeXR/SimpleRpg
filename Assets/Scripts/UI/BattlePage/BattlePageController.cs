@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using echo17.Signaler.Core;
 using UI.PreBattlePage;

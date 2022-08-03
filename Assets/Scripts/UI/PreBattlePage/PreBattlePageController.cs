@@ -1,13 +1,14 @@
-using System.ComponentModel;
+using System.Diagnostics;
 using echo17.Signaler.Core;
+using PlayerData;
 using UI.MainMenuPage;
 using UnityEngine;
 using UnityEngine.UI;
-using Utilities;
+using Debug = UnityEngine.Debug;
 
 namespace UI.PreBattlePage
 {
-    public class PreBattlePageController : MonoBehaviour, ISubscriber, IBroadcaster
+    public class PreBattlePageController : MonoBehaviour, ISubscriber, IBroadcaster, IRequiredPlayerDataController
     {
         [Header("Visual References")]
         [SerializeField]
@@ -19,6 +20,9 @@ namespace UI.PreBattlePage
 
         [Header("Data References")] 
         [SerializeField] private GameObject heroDisplayPrefab;
+
+        private PlayerDataController _playerDataController;
+
         private void Awake()
         {
             Signaler.Instance.Subscribe<TransitionToPreBattle>(this, OnTransitionToPreBattle);
@@ -27,7 +31,7 @@ namespace UI.PreBattlePage
         private bool OnTransitionToPreBattle(TransitionToPreBattle signal)
         {
             SetupButtonEvents();
-            Initialize();
+            Signaler.Instance.Broadcast(this, new RequestPlayerDataController {requester = this});
             preBattleLayoutObject.SetActive(true);
              
             return true;
@@ -52,15 +56,31 @@ namespace UI.PreBattlePage
             Signaler.Instance.Broadcast(this, new TransitionToTeamSelection());
         }
 
+
+
+        public void SetPlayerDataController(PlayerDataController playerDataController)
+        {
+            _playerDataController = playerDataController;
+            Initialize();
+        }
         private void Initialize()
         {
-            // ES3.LoadRawString(Globals.PlayerSaveJsonPath);
-            
-            //TODO:: Load existing data
-            //TODO:: Populate existing heroes
-            
+            PopulateCurrentlySelectedHeroes();
+
+
+        }
+
+        private void PopulateCurrentlySelectedHeroes()
+        {
+            var currentTeam = _playerDataController.GetCurrentTeam();
+            foreach (var ownedHero in currentTeam)
+            {
+                var heroDisplayObject = Instantiate(heroDisplayPrefab, selectedHeroesLayoutGroup.transform);
+                heroDisplayObject.GetComponent<HeroDisplayController>().Initialize(ownedHero);
                 
-            
+                
+                Debug.LogError("ownedCurrentTeam : "+ownedHero.id);
+            }
         }
     }
 }

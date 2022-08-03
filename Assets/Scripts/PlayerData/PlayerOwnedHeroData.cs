@@ -1,15 +1,17 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Data
+namespace PlayerData
 {
     [Serializable]
-    public class HeroData
+    public class PlayerOwnedHeroData
     {
         public string id;
+        public Color color;
         public string name;
-        public Color heroColor;
+        public int level;
         public int health;
         public int attack;
+        public int experience;
     }
 }

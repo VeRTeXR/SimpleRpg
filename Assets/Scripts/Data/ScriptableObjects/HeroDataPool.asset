@@ -13,12 +13,15 @@ MonoBehaviour:
   m_Name: HeroDataPool
   m_EditorClassIdentifier: 
   heroDataList:
-  - heroColor: {r: 1, g: 0, b: 0, a: 1}
+  - id: hero01
+    heroColor: {r: 1, g: 0, b: 0, a: 1}
     health: 10
     attack: 5
-  - heroColor: {r: 0.11532307, g: 0, b: 1, a: 1}
+  - id: hero02
+    heroColor: {r: 0.11532307, g: 0, b: 1, a: 1}
     health: 20
     attack: 3
-  - heroColor: {r: 0.029804826, g: 1, b: 0, a: 1}
+  - id: hero03
+    heroColor: {r: 0.029804826, g: 1, b: 0, a: 1}
     health: 15
     attack: 4
