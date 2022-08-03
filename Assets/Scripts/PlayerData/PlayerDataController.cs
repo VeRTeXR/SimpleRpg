@@ -105,5 +105,10 @@ namespace PlayerData
         {
             return _playerProgress.heroIndexToOwnedHeroDataPair;
         }
+
+        public int GetCurrentPlayerRound()
+        {
+            return _playerProgress.battleRound;
+        }
     }
 }

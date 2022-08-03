@@ -1,4 +1,4 @@
-using System;
+using System.Collections.Generic;
 using echo17.Signaler.Core;
 using PlayerData;
 using UI.MainMenuPage;
@@ -12,12 +12,15 @@ namespace UI.TeamSelectionPage
     {
         [Header("Visual References")]
         [SerializeField] private GameObject layoutObject;
+
+        [SerializeField] private GridLayoutGroup ownedHeroesGrid;
         [SerializeField] private Button backButton;
 
         [Header("Date References")] 
         [SerializeField] private GameObject heroIconPrefab;
 
         private PlayerDataController _playerDataController;
+        private List<GameObject> _heroObjectList = new List<GameObject>();
 
         private void Awake()
         {
@@ -26,11 +29,18 @@ namespace UI.TeamSelectionPage
 
         private bool OnTransitionToTeamSelection(TransitionToTeamSelection signal)
         {
+            ClearExistingObject();
             SetupButtonEvents();
             Signaler.Instance.Broadcast(this, new RequestPlayerDataController{requester = this});
             return true;
         }
-        
+
+        private void ClearExistingObject()
+        {
+            foreach (var heroObject in _heroObjectList) Destroy(heroObject);
+            _heroObjectList.Clear();
+        }
+
         private void SetupButtonEvents()
         {
             backButton.onClick.RemoveAllListeners();
@@ -56,8 +66,10 @@ namespace UI.TeamSelectionPage
             var ownedHeroDictionary = _playerDataController.GetOwnedHeroDictionary();
             foreach (var ownedHero in ownedHeroDictionary)
             {
-                var heroIconObject = Instantiate(heroIconPrefab, layoutObject.transform);
+                var heroIconObject = Instantiate(heroIconPrefab, ownedHeroesGrid.transform);
                 heroIconObject.GetComponent<HeroDisplayController>().Initialize(ownedHero.Value);
+
+                _heroObjectList.Add(heroIconObject);
             }
         }
     }
