@@ -282,6 +282,7 @@ MonoBehaviour:
   enemyTransform: {fileID: 4834930105508540750}
   playerHeroesBattlePrefab: {fileID: 2934966878837396740, guid: 59c8af02716928d4fbe8491102da2bae, type: 3}
   enemyBattlePrefab: {fileID: 7591079687160136827, guid: 0c98d9fc8b54e5847928f139dbb7b03f, type: 3}
+  enemyDataPool: {fileID: 11400000, guid: 480ca90221396a040abf18d137fcc7cf, type: 2}
 --- !u!1 &6469237924032433023
 GameObject:
   m_ObjectHideFlags: 0
