@@ -26,8 +26,21 @@ namespace UI.BattlePage
         {
             Signaler.Instance.Subscribe<TransitionToBattle>(this, OnTransitionToBattle);
             Signaler.Instance.Subscribe<ClearBattleSelectionArrow>(this, OnClearSelectionArrow);
-            
+            Signaler.Instance.Subscribe<PlayerHeroKilled>(this, OnPlayerHeroKilled);
             Signaler.Instance.Broadcast(this, new RequestPlayerDataController{requester = this});
+        }
+
+        private bool OnPlayerHeroKilled(PlayerHeroKilled signal)
+        {
+            _inBattleHeroList.Remove(signal.heroController);
+            Destroy(signal.heroController.gameObject);
+
+
+            if (_inBattleHeroList.Count <= 0)
+            {
+                //TODO:: Trigger round lose
+            }
+            return true;
         }
 
         private bool OnClearSelectionArrow(ClearBattleSelectionArrow signal)
@@ -81,7 +94,12 @@ namespace UI.BattlePage
 
         public void SetPlayerDataController(PlayerDataController playerDataController)
         {
-            _playerDataController = playerDataController; 
+            _playerDataController = playerDataController;
+        }
+
+        public List<PlayerInBattleHeroController> GetAvailableHeroes()
+        {
+            return _inBattleHeroList;
         }
     }
 }

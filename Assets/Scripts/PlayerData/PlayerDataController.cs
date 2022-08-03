@@ -74,7 +74,8 @@ namespace PlayerData
                     level = 1,
                     name = heroUnit.name,
                     color =  heroUnit.heroColor,
-                    health = heroUnit.health,
+                    maxHealth = heroUnit.health,
+                    currentHealth = heroUnit.health,
                     attack = heroUnit.attack, 
                     experience = 0
                 });
@@ -92,7 +93,7 @@ namespace PlayerData
             Debug.Log("Loaded:"+ playerProgress.heroIndexToOwnedHeroDataPair.Count);
             foreach (var ownedHero in playerProgress.heroIndexToOwnedHeroDataPair)
             {
-                Debug.Log("Id: "+ ownedHero.Key + " :::: "+ownedHero.Value.health);
+                Debug.Log("Id: "+ ownedHero.Key + " :::: "+ownedHero.Value.currentHealth);
             }
         }
 

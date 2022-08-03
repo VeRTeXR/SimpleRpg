@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using echo17.Signaler.Core;
+﻿using echo17.Signaler.Core;
 using PlayerData;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace UI.BattlePage
@@ -17,14 +15,28 @@ namespace UI.BattlePage
         public int AttackPoint => _heroData.attack;
         private PlayerOwnedHeroData _heroData;
         private bool _isInUnitSelectionPhase;
+        private int _currentHealth;
+
+        private DamageTextGenerator _damageTextGenerator;
+        private HealthBarController _healthBarController;
 
         private void Awake()
         {
+            _damageTextGenerator = GetComponent<DamageTextGenerator>();
+            _healthBarController = GetComponent<HealthBarController>();
+            Signaler.Instance.Subscribe<StartEnemyTurn>(this, OnEnemyTurnStart);
             Signaler.Instance.Subscribe<StartPlayerUnitSelection>(this, OnStartPlayerUnitSelection);
+        }
+
+        private bool OnEnemyTurnStart(StartEnemyTurn signal)
+        {
+            heroButton.enabled = false;
+            return true;
         }
 
         private bool OnStartPlayerUnitSelection(StartPlayerUnitSelection signal)
         {
+            heroButton.enabled = true;
             _isInUnitSelectionPhase = true;
             return true;
         }
@@ -34,11 +46,10 @@ namespace UI.BattlePage
         {
             _heroData = playerOwnedHeroData;
             heroImage.color = _heroData.color;
-            //TODO:: Initialize with Player selected hero data or null
-            Debug.Log("Initialize Hero!");
-
+            _currentHealth = _heroData.currentHealth;
+            _healthBarController.SetFill(_heroData.maxHealth, _currentHealth);
+            
             SetupButtonEvent();
-
         }
 
         private void SetupButtonEvent()
@@ -61,5 +72,23 @@ namespace UI.BattlePage
             selectionArrow.SetActive(false);
         }
 
+        public void OnDamage(int attackPoint)
+        {
+            _currentHealth -= attackPoint;
+            _damageTextGenerator.ShowDamageDealt(attackPoint);
+            _healthBarController.SetFill(_heroData.maxHealth, _currentHealth);
+            
+            Debug.LogError("hero hp : "+_currentHealth+ " ::: "+attackPoint);
+            if (_currentHealth <= 0)
+                PlayerHeroKilled();
+            else
+                Signaler.Instance.Broadcast(this, new StartPlayerUnitSelection());
+        }
+
+        private void PlayerHeroKilled()
+        {
+            //TODO:: trigger dead animation seq
+            Signaler.Instance.Broadcast(this, new PlayerHeroKilled {heroController= this });
+        }
     }
 }

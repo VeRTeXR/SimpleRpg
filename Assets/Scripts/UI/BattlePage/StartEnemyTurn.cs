@@ -2,5 +2,6 @@
 {
     public class StartEnemyTurn
     {
+        public EnemyInBattleController enemyController;
     }
 }

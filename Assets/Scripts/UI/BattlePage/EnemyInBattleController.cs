@@ -8,16 +8,26 @@ namespace UI.BattlePage
 {
     public class EnemyInBattleController:MonoBehaviour, ISubscriber, IBroadcaster
     {
+       
         [Header("Visual References")]
         [SerializeField] private Image enemyIcon;
         [SerializeField] private Image enemyOutline;
         [SerializeField] private Button enemyButton;
+       
+        public int MinAttack => _enemyData.minAttack;
+        public int MaxAttack => _enemyData.maxAttack;
+        
         private EnemyData _enemyData;
         private int _currentHealth;
         private bool _isInTargetSelectionPhase;
-
+        private DamageTextGenerator _damageTextGenerator;
+        private HealthBarController _healthBarController;
+        
+        
         private void Awake()
         {
+            _damageTextGenerator = GetComponent<DamageTextGenerator>();
+            _healthBarController = GetComponent<HealthBarController>();
             Signaler.Instance.Subscribe<StartTargetSelectionPhase>(this, OnStartTargetSelectionPhase);
             SetupButtonEvents();
         }
@@ -55,12 +65,15 @@ namespace UI.BattlePage
             _enemyData = enemyData;
             enemyIcon.color = _enemyData.enemyColor;
             _currentHealth = _enemyData.totalHp;
+            _healthBarController.SetFill(_enemyData.totalHp, _currentHealth);
         }
 
         public void OnDamage(int selectedHeroAttackPoint)
         {
             _currentHealth -= selectedHeroAttackPoint;
-
+            _damageTextGenerator.ShowDamageDealt(selectedHeroAttackPoint);
+            _healthBarController.SetFill(_enemyData.totalHp, _currentHealth);
+            Debug.LogError("Cur HP : "+_currentHealth +  " : dmg for : "+selectedHeroAttackPoint);
             //TODO:: Animate Health Bar
             if (_currentHealth <= 0)
             {
@@ -68,7 +81,7 @@ namespace UI.BattlePage
             }
             else
             {
-                Signaler.Instance.Broadcast(this, new StartEnemyTurn());
+                Signaler.Instance.Broadcast(this, new StartEnemyTurn{enemyController = this});
             }
         }
 

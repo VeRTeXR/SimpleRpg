@@ -10,7 +10,8 @@ namespace PlayerData
         public Color color;
         public string name;
         public int level;
-        public int health;
+        public int maxHealth;
+        public int currentHealth;
         public int attack;
         public int experience;
     }
