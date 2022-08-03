@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Data;
 using echo17.Signaler.Core;
 using Newtonsoft.Json.Converters;
+using UI.BattlePage;
 using UI.PreBattlePage;
 using UnityEngine;
 using Utilities;
@@ -61,7 +62,7 @@ namespace PlayerData
                 _playerProgress.currentTeam.Add(_playerProgress.heroIndexToOwnedHeroDataPair[i]);
         }
 
-        private void AddRandomHeroToPlayerProgress(PlayerProgress playerProgress, int heroIndex)
+        private HeroData AddRandomHeroToPlayerProgress(PlayerProgress playerProgress, int heroIndex)
         {
             var epochStart = new DateTime(1970, 1, 1, 8, 0, 0, DateTimeKind.Utc);
             var timestamp = (DateTime.UtcNow - epochStart).TotalSeconds;
@@ -79,7 +80,8 @@ namespace PlayerData
                     attack = heroUnit.attack, 
                     experience = 0
                 });
-            
+
+            return heroUnit;
         }
 
         private HeroData RandomizeHeroFromPool()
@@ -110,6 +112,53 @@ namespace PlayerData
         public int GetCurrentPlayerRound()
         {
             return _playerProgress.battleRound;
+        }
+
+        public void IncrementRound()
+        {
+            _playerProgress.battleRound++;
+        }
+
+        public HeroData GrantRandomHero()
+        {
+            return AddRandomHeroToPlayerProgress(_playerProgress,
+                _playerProgress.heroIndexToOwnedHeroDataPair.Count + 1);
+        }
+
+        public void SavePlayerData()
+        {
+            Debug.LogError("SavePlayerData!");
+            ES3.Save<PlayerProgress>(Globals.PlayerProgressKey, _playerProgress);
+        }
+
+        public void UpdateCurrentTeamHealth(List<PlayerInBattleHeroController> heroListFromBattle)
+        {
+            foreach (var playerOwnedHeroData in _playerProgress.currentTeam)
+            {
+                foreach (var inBattleHeroController in heroListFromBattle)
+                {
+                    if (string.Equals(playerOwnedHeroData.id, inBattleHeroController.Id))
+                    {
+                        playerOwnedHeroData.currentHealth = inBattleHeroController.CurrentHealth;
+                    }
+                }
+            }
+
+            var remainingHeroDataList = new List<PlayerOwnedHeroData>();
+            foreach (var inBattleHeroController in heroListFromBattle)
+                remainingHeroDataList.Add(inBattleHeroController.HeroData);
+
+            var currentTeam = _playerProgress.currentTeam;
+            if (heroListFromBattle.Count != _playerProgress.currentTeam.Count)
+            {
+                foreach (var currentTeamHeroData in currentTeam)
+                {
+                    if (!remainingHeroDataList.Contains(currentTeamHeroData))
+                    {
+                        _playerProgress.currentTeam.Remove(currentTeamHeroData);
+                    }
+                }
+            }
         }
     }
 }

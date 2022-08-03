@@ -1,5 +1,4 @@
-﻿using System;
-using Data;
+﻿using Data;
 using echo17.Signaler.Core;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,13 +21,15 @@ namespace UI.BattlePage
         private bool _isInTargetSelectionPhase;
         private DamageTextGenerator _damageTextGenerator;
         private HealthBarController _healthBarController;
-        
-        
+        private BattlePageController _battlePageController;
+        private MessageSubscription<StartTargetSelectionPhase> _targetSelectSubscription;
+
+
         private void Awake()
         {
             _damageTextGenerator = GetComponent<DamageTextGenerator>();
             _healthBarController = GetComponent<HealthBarController>();
-            Signaler.Instance.Subscribe<StartTargetSelectionPhase>(this, OnStartTargetSelectionPhase);
+           _targetSelectSubscription =  Signaler.Instance.Subscribe<StartTargetSelectionPhase>(this, OnStartTargetSelectionPhase);
             SetupButtonEvents();
         }
 
@@ -59,9 +60,9 @@ namespace UI.BattlePage
         }
 
 
-        public void Initialize(EnemyData enemyData)
+        public void Initialize(EnemyData enemyData, BattlePageController battlePageController)
         {
-            Debug.Log("Initialize Enemy!");
+            _battlePageController = battlePageController;
             _enemyData = enemyData;
             enemyIcon.color = _enemyData.enemyColor;
             _currentHealth = _enemyData.totalHp;
@@ -73,21 +74,20 @@ namespace UI.BattlePage
             _currentHealth -= selectedHeroAttackPoint;
             _damageTextGenerator.ShowDamageDealt(selectedHeroAttackPoint);
             _healthBarController.SetFill(_enemyData.totalHp, _currentHealth);
-            Debug.LogError("Cur HP : "+_currentHealth +  " : dmg for : "+selectedHeroAttackPoint);
-            //TODO:: Animate Health Bar
             if (_currentHealth <= 0)
-            {
                 TriggerRoundOver();
-            }
             else
-            {
-                Signaler.Instance.Broadcast(this, new StartEnemyTurn{enemyController = this});
-            }
+                Signaler.Instance.Broadcast(this, new StartEnemyTurn {enemyController = this});
         }
 
         private void TriggerRoundOver()
         {
-            Debug.LogError("RoundOver");
+            Signaler.Instance.Broadcast(this, new BattleRoundOver{isPlayerWin = true, inBattleHeroList = _battlePageController.GetAvailableHeroes()});
+        }
+
+        private void OnDestroy()
+        {
+            _targetSelectSubscription.UnSubscribe();
         }
     }
 }

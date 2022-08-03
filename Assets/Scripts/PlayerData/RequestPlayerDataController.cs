@@ -1,6 +1,4 @@
-﻿using PlayerData;
-
-namespace UI.PreBattlePage
+﻿namespace PlayerData
 {
     public struct RequestPlayerDataController
     {

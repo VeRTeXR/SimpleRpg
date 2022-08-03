@@ -1,4 +1,3 @@
-using System;
 using echo17.Signaler.Core;
 using TMPro;
 using UnityEngine;
@@ -17,14 +16,22 @@ namespace UI.BattlePage
         private void Awake()
         {
             _battlePage = GetComponent<BattlePageController>();
-            
+            turnText.gameObject.SetActive(false);
             
             Signaler.Instance.Subscribe<BattleStart>(this, OnBattleStart);
             Signaler.Instance.Subscribe<StartPlayerUnitSelection>(this, OnStartPlayerUnitSelection);
             Signaler.Instance.Subscribe<PlayerSelectTarget>(this, OnPlayerSelectTarget);
             Signaler.Instance.Subscribe<PlayerSelectHero>(this, OnPlayerSelectHero);
             Signaler.Instance.Subscribe<StartEnemyTurn>(this, OnEnemyTurnStart);
+            Signaler.Instance.Subscribe<BattleRoundOver>(this, OnBattleRoundOver);
+        }
+
+        private bool OnBattleRoundOver(BattleRoundOver signal)
+        {
+            if (signal.isPlayerWin)
+                _battlePage.Exit();
             turnText.gameObject.SetActive(false);
+            return true;
         }
 
         private bool OnStartPlayerUnitSelection(StartPlayerUnitSelection signal)
