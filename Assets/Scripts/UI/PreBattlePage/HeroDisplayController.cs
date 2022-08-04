@@ -1,6 +1,6 @@
-﻿using echo17.Signaler.Core;
+﻿using System;
+using echo17.Signaler.Core;
 using PlayerData;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -18,11 +18,17 @@ namespace UI.PreBattlePage
         private PlayerOwnedHeroData _heroData;
         private bool _isHoldTimerStart;
         private float _holdTime;
+        private PlayerDataController _playerDataController;
 
-        public void Initialize(PlayerOwnedHeroData ownedHeroData)
+
+
+        public void Initialize(PlayerOwnedHeroData ownedHeroData, PlayerDataController playerDataController)
         {
+            _playerDataController = playerDataController;
             _heroData = ownedHeroData;
             heroImage.color = ownedHeroData.color;
+            
+            RefreshSelectionStatus();
         }
 
         private void Update()
@@ -42,23 +48,49 @@ namespace UI.PreBattlePage
         {
             Debug.LogError(_holdTime);
             if (_holdTime < Globals.TriggerSelectionTime)
-                ShowDetailTooltip();
-            else
                 HeroSelection();
+                // ShowDetailTooltip();
+            // else
+                // HeroSelection();
             _isHoldTimerStart = false;
             _holdTime = 0;
         }
 
         private void HeroSelection()
         {
-            // TODO:: if current team is full show warning
-            Signaler.Instance.Broadcast(this, new ShowWarningText {text = Globals.TeamFullWarning});
-            //TODO :: if hero already selected, deselect. else put into current team
+         
+            if (_playerDataController.IsHeroAlreadyInCurrentTeam(_heroData))
+            {
+                Debug.LogError("Unequip");
+                _playerDataController.UnequipHeroFromCurrentTeam(_heroData);
+                RefreshSelectionStatus();
+                _playerDataController.SavePlayerData();
+                return;
+            }
+
+            if (_playerDataController.GetCurrentTeamList().Count < Globals.MaxUnitInTeam)
+            {
+                Debug.LogError("Equip");
+                _playerDataController.EquipHeroToCurrentTeam(_heroData);
+                RefreshSelectionStatus();
+                _playerDataController.SavePlayerData();
+            }
+            else
+                Signaler.Instance.Broadcast(this, new ShowWarningText {text = Globals.TeamFullWarning});
+        }
+
+        private void RefreshSelectionStatus()
+        {
+            if(_playerDataController.IsHeroAlreadyInCurrentTeam(_heroData))
+                selectedOutlineImage.gameObject.SetActive(true);
+            else 
+                selectedOutlineImage.gameObject.SetActive(false);
         }
 
         private void ShowDetailTooltip()
         {
             Signaler.Instance.Broadcast(this, new ShowUnitTooltip {requesterObject = gameObject, ownedUnitData = _heroData});
         }
+
     }
 }

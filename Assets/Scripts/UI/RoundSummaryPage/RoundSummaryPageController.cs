@@ -70,7 +70,7 @@ namespace UI.RoundSummaryPage
             var newRound = currentRound+1;
             if (newRound % 5 == 0)
             {
-                if (_playerDataController.GetOwnedHeroDictionary().Count < Globals.HeroInventoryLimit)
+                if (_playerDataController.GetOwnedHeroList().Count < Globals.HeroInventoryLimit)
                 {
                     var grantedHero = _playerDataController.GrantRandomHero();
                     //TODO:: Show hero grant popup??

@@ -85,11 +85,11 @@ namespace UI.PreBattlePage
 
         private void PopulateCurrentlySelectedHeroes()
         {
-            var currentTeam = _playerDataController.GetCurrentTeam();
+            var currentTeam = _playerDataController.GetCurrentTeamList();
             foreach (var ownedHero in currentTeam)
             {
                 var heroDisplayObject = Instantiate(heroDisplayPrefab, selectedHeroesLayoutGroup.transform);
-                heroDisplayObject.GetComponent<HeroDisplayController>().Initialize(ownedHero);
+                heroDisplayObject.GetComponent<HeroDisplayController>().Initialize(ownedHero,_playerDataController);
 
                 _heroDisplayObjectList.Add(heroDisplayObject);
                 Debug.LogError("ownedCurrentTeam : "+ownedHero.id);

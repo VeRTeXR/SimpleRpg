@@ -14,5 +14,6 @@ namespace Utilities
         public static int HeroInventoryLimit = 10;
         public static double TriggerSelectionTime = 3f;
         public static string TeamFullWarning = "Your team is full.";
+        public static int MaxUnitInTeam = 3;
     }
 }
