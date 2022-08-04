@@ -12,5 +12,7 @@ namespace Utilities
         public static string PlayerWonHeader = "You Win!";
         public static string PlayerLose = "You Lose!";
         public static int HeroInventoryLimit = 10;
+        public static double TriggerSelectionTime = 3f;
+        public static string TeamFullWarning = "Your team is full.";
     }
 }
