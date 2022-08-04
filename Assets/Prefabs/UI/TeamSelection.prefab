@@ -266,7 +266,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Available Heroes:'
+  m_text: SELECT YOUR HEROES
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -521,8 +521,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   layoutObject: {fileID: 1152107182689537368}
+  ownedHeroesGrid: {fileID: 4795413941129420218}
   backButton: {fileID: 3505956732261342587}
-  heroesIconPrefab: {fileID: 3079057502878798294, guid: 4022a5a4ba5cf1f44baf05b4dcb1c5a8, type: 3}
+  heroIconPrefab: {fileID: 3079057502878798294, guid: 4022a5a4ba5cf1f44baf05b4dcb1c5a8, type: 3}
 --- !u!1 &2087588337718094463
 GameObject:
   m_ObjectHideFlags: 0
