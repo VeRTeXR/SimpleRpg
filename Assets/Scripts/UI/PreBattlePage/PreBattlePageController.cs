@@ -92,7 +92,6 @@ namespace UI.PreBattlePage
                 heroDisplayObject.GetComponent<HeroDisplayController>().Initialize(ownedHero,_playerDataController);
 
                 _heroDisplayObjectList.Add(heroDisplayObject);
-                Debug.LogError("ownedCurrentTeam : "+ownedHero.id);
             }
         }
     }

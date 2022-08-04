@@ -16,9 +16,10 @@ namespace UI.RoundSummaryPage
     {
         [Header("Visual References")]
         [SerializeField] private Button backToPreBattleButton;
-
         [SerializeField] private TextMeshProUGUI roundStateText;
         [SerializeField] private GameObject layoutObject;
+        [SerializeField] private GrantHeroPopupController grantHeroPopupController;
+        
         private PlayerDataController _playerDataController;
 
       
@@ -62,20 +63,21 @@ namespace UI.RoundSummaryPage
                 roundStateText.text = Globals.PlayerLose;
 
         }
+        
 
         private void IncrementPlayerRound()
         {
-            var currentRound = _playerDataController.GetCurrentPlayerRound();
             _playerDataController.IncrementRound();
-            var newRound = currentRound+1;
-            if (newRound % 5 == 0)
-            {
+            // if (_playerDataController.GetCurrentPlayerRound() % 5 == 0)
+            // {
                 if (_playerDataController.GetOwnedHeroList().Count < Globals.HeroInventoryLimit)
                 {
                     var grantedHero = _playerDataController.GrantRandomHero();
+                    Debug.LogError(grantedHero.id);
+                    grantHeroPopupController.ShowPopup(grantedHero);
                     //TODO:: Show hero grant popup??
                 }
-            }
+            // }
 
             _playerDataController.SavePlayerData();
         }

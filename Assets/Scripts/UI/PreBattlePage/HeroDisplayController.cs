@@ -33,10 +33,8 @@ namespace UI.PreBattlePage
 
         private void Update()
         {
-            if (_isHoldTimerStart)
-            {
+            if (_isHoldTimerStart) 
                 _holdTime += Time.deltaTime;
-            }
         }
 
         public void OnPointerDown(PointerEventData eventData)
@@ -46,6 +44,7 @@ namespace UI.PreBattlePage
 
         public void OnPointerUp(PointerEventData eventData)
         {
+            //TODO:: Enable tooltip here!
             Debug.LogError(_holdTime);
             if (_holdTime < Globals.TriggerSelectionTime)
                 HeroSelection();
