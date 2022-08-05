@@ -1,5 +1,4 @@
-﻿using System;
-using echo17.Signaler.Core;
+﻿using echo17.Signaler.Core;
 using PlayerData;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -14,16 +13,16 @@ namespace UI.PreBattlePage
         [SerializeField] private Image selectedOutlineImage; 
         [SerializeField] private Image heroImage;
         
-        
         private PlayerOwnedHeroData _heroData;
         private bool _isHoldTimerStart;
         private float _holdTime;
         private PlayerDataController _playerDataController;
-
+        private bool _isDisplayOnly;
 
 
         public void Initialize(PlayerOwnedHeroData ownedHeroData, PlayerDataController playerDataController)
         {
+            _isDisplayOnly = false;
             _playerDataController = playerDataController;
             _heroData = ownedHeroData;
             heroImage.color = ownedHeroData.color;
@@ -31,6 +30,14 @@ namespace UI.PreBattlePage
             RefreshSelectionStatus();
         }
 
+        
+        public void InitializeDisplay(PlayerOwnedHeroData ownedHeroData)
+        {
+            _isDisplayOnly = true;
+            _heroData = ownedHeroData;
+            heroImage.color = ownedHeroData.color;
+        }
+        
         private void Update()
         {
             if (_isHoldTimerStart) 
@@ -56,7 +63,8 @@ namespace UI.PreBattlePage
 
         private void HeroSelection()
         {
-         
+            if (_isDisplayOnly) return;
+            
             if (_playerDataController.IsHeroAlreadyInCurrentTeam(_heroData))
             {
                 Debug.LogError("Unequip");
@@ -79,10 +87,13 @@ namespace UI.PreBattlePage
 
         private void RefreshSelectionStatus()
         {
-            if(_playerDataController.IsHeroAlreadyInCurrentTeam(_heroData))
-                selectedOutlineImage.gameObject.SetActive(true);
-            else 
+            if (_isDisplayOnly)
+            {
                 selectedOutlineImage.gameObject.SetActive(false);
+                return;
+            }
+            
+            selectedOutlineImage.gameObject.SetActive(_playerDataController.IsHeroAlreadyInCurrentTeam(_heroData));
         }
 
         private void ShowDetailTooltip()

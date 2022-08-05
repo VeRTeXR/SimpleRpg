@@ -101,9 +101,7 @@ namespace UI.BattlePage
 
         private void PopulatePlayerHeroes()
         {
-            //TODO:: Load player selected heroes here!
             var currentTeam = _playerDataController.GetCurrentTeamList();
-
             for (var i = 0; i < playerHeroesTransforms.Count; i++)
             {
                 if (i > playerHeroesTransforms.Count) return;

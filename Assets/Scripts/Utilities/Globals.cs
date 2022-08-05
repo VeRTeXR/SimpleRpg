@@ -21,7 +21,7 @@ namespace Utilities
         
         #region Configurations
         public static int MaxUnitInTeam = 3;
-        public static int LevelExperienceLimit = 5;
+        public static int LevelExperienceLimit = 10;
         public static int HeroInventoryLimit = 10;
         public static double TriggerSelectionTime = 1f;
         public static int StarterUnitCount = 3;
