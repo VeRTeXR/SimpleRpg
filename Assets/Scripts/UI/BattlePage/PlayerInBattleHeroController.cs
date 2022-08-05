@@ -14,7 +14,8 @@ namespace UI.BattlePage
         [Header("Visual References")]
         [SerializeField] private Image heroImage;
         [SerializeField] private GameObject selectionArrow;
-
+        [SerializeField] private GameObject selectionOutline;
+        
         private PlayerOwnedHeroData _heroData;
         
         private int _currentHealth;
@@ -59,12 +60,17 @@ namespace UI.BattlePage
             _heroData = playerOwnedHeroData;
             heroImage.color = _heroData.color;
             _currentHealth = _heroData.currentHealth;
+
             _healthBarController.SetFill(_heroData.maxHealth, _currentHealth);
+            ClearSelectionArrow();
         }
 
+
+        
         public void ClearSelectionArrow()
         {
             selectionArrow.SetActive(false);
+            selectionOutline.SetActive(false);
         }
 
         public void OnDamage(int attackPoint)
@@ -72,8 +78,7 @@ namespace UI.BattlePage
             _currentHealth -= attackPoint;
             _damageTextGenerator.ShowDamageDealt(attackPoint);
             _healthBarController.SetFill(_heroData.maxHealth, _currentHealth);
-            
-            Debug.LogError("hero hp : "+_currentHealth+ " ::: "+attackPoint);
+           
             if (_currentHealth <= 0)
                 PlayerHeroKilled();
             
@@ -82,12 +87,11 @@ namespace UI.BattlePage
 
         private void PlayerHeroKilled()
         {
-            //TODO:: trigger dead animation seq
             Signaler.Instance.Broadcast(this, new PlayerHeroKilled {heroController = this});
         }
 
         private void Update()
-        {
+        {         
             if (_isHoldTimerStart)
                 _holdTime += Time.deltaTime;
         }
@@ -108,7 +112,6 @@ namespace UI.BattlePage
         {            
             if (!_isPlayerTurn) return;
                 
-            ResetHoldInput();
 
             if (_holdTime > Globals.TriggerBattleHeroDetailTooltipTime)
                 Signaler.Instance.Broadcast(this,
@@ -116,10 +119,17 @@ namespace UI.BattlePage
             else
             {
                 Signaler.Instance.Broadcast(this, new ClearBattleSelectionArrow());
+
+                selectionOutline.transform.localScale = Vector3.zero;
+                selectionOutline.SetActive(true);
+                LeanTween.scale(selectionOutline, new Vector3(1.2f, 1.2f, 1.2f), 0.2f);
                 selectionArrow.SetActive(true);
+                
                 Signaler.Instance.Broadcast(this, new PlayerSelectHero {heroController = this});
                 Signaler.Instance.Broadcast(this, new StartTargetSelectionPhase());
             }
+            
+            ResetHoldInput();
         }
                 
         private void ResetHoldInput()

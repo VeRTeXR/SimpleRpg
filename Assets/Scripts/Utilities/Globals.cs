@@ -13,7 +13,8 @@ namespace Utilities
         public static string EnemyTurn = "Enemy Turn";
         public static string PlayerWonHeader = "You Win!";
         public static string PlayerLose = "You Lose!";
-        public static string TeamFullWarning = "Your team is full.";
+        public static string TeamFullWarning = "Your team is full"; 
+        public static string BattleTeamUnitRequirementHint = "Battle only available for 3 unit team";
         #endregion
         
         
@@ -28,5 +29,6 @@ namespace Utilities
         public static float TriggerBattleHeroDetailTooltipTime=  1f;
 
         #endregion
+
     }
 }

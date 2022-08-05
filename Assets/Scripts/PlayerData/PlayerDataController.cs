@@ -10,7 +10,7 @@ using Random = UnityEngine.Random;
 
 namespace PlayerData
 {
-    public class PlayerDataController : MonoBehaviour,ISubscriber
+    public class PlayerDataController : MonoBehaviour,ISubscriber, IBroadcaster
     {
         [Header("Data References")]
         [SerializeField] private HeroDataPool heroDataPool;
@@ -21,9 +21,18 @@ namespace PlayerData
         private void Awake()
         {
             Signaler.Instance.Subscribe<RequestPlayerDataController>(this, OnRequestPlayerDataController);
+            Signaler.Instance.Subscribe<RegeneratePlayerData>(this, OnRegeneratePlayerData);
+            
             PopulatePlayerSaveData();
         }
 
+        private bool OnRegeneratePlayerData(RegeneratePlayerData signal)
+        {
+            GenerateNewPlayerProgressData();
+            return true;
+        }
+
+        
         private bool OnRequestPlayerDataController(RequestPlayerDataController signal)
         {
             signal.requester.SetPlayerDataController(this);
@@ -82,7 +91,7 @@ namespace PlayerData
 
         private HeroData RandomizeHeroFromPool()
         {
-            var rngIndex = Random.Range(0, heroDataPool.heroDataList.Count-1);
+            var rngIndex = Random.Range(0, heroDataPool.heroDataList.Count);
             return heroDataPool.heroDataList[rngIndex]; 
         }
 
@@ -120,11 +129,15 @@ namespace PlayerData
 
         public void UpdateCurrentTeamHealth(List<PlayerInBattleHeroController> heroListFromBattle)
         {
-            var currentTeam = _playerProgress.currentTeam;
+            var currentTeam = new List<PlayerOwnedHeroData>(_playerProgress.currentTeam);
 
             if (heroListFromBattle == null || heroListFromBattle.Count <= 0)
             {
+                foreach (var inTeamHeroData in _playerProgress.currentTeam) 
+                    RemovedFromOwnedUnit(inTeamHeroData);
                 _playerProgress.currentTeam = new List<PlayerOwnedHeroData>();
+
+                GameOverCheck();
                 return;
             }
             
@@ -133,16 +146,45 @@ namespace PlayerData
                 if (string.Equals(playerOwnedHeroData.id, inBattleHeroController.Id))
                     playerOwnedHeroData.currentHealth = inBattleHeroController.CurrentHealth;
 
-            var remainingHeroDataList = new List<PlayerOwnedHeroData>();
-            foreach (var inBattleHeroController in heroListFromBattle)
-                remainingHeroDataList.Add(inBattleHeroController.HeroData);
             
-            if (heroListFromBattle.Count != _playerProgress.currentTeam.Count)
-                foreach (var currentTeamHeroData in currentTeam)
-                    if (!remainingHeroDataList.Contains(currentTeamHeroData))
-                        currentTeam.Remove(currentTeamHeroData);
+            var updatedInTeamHeroList = new List<PlayerOwnedHeroData>();
+            if (heroListFromBattle.Count != currentTeam.Count)
+            {
+                RemoveKilledHero(heroListFromBattle, currentTeam, updatedInTeamHeroList);
+            }
+      
+            
+            GameOverCheck();
+        }
 
-            _playerProgress.currentTeam = currentTeam;
+        private void RemoveKilledHero(List<PlayerInBattleHeroController> heroListFromBattle, List<PlayerOwnedHeroData> currentTeam, List<PlayerOwnedHeroData> updatedInTeamHeroList)
+        {
+            foreach (var currentTeamHeroData in currentTeam)
+            foreach (var inBattleHeroController in heroListFromBattle)
+                if (inBattleHeroController.Id == currentTeamHeroData.id)
+                    updatedInTeamHeroList.Add(currentTeamHeroData);
+                else
+                    RemovedFromOwnedUnit(currentTeamHeroData);
+
+            _playerProgress.currentTeam = updatedInTeamHeroList;
+        }
+
+        private void GameOverCheck()
+        {
+            if (GetOwnedHeroList().Count < 3 && _playerProgress.currentTeam.Count < Globals.MaxUnitInTeam)
+                Signaler.Instance.Broadcast(this, new GameOver());
+        }
+
+        private void RemovedFromOwnedUnit(PlayerOwnedHeroData currentTeamHeroData)
+        {
+            var updatedOwnedHeroList = new List<PlayerOwnedHeroData>();
+            foreach (var ownedHeroData in _playerProgress.playerOwnedHeroList)
+            {
+                if(!string.Equals(currentTeamHeroData.id, ownedHeroData.id))   
+                        updatedOwnedHeroList.Add(ownedHeroData);
+            }
+
+            _playerProgress.playerOwnedHeroList = updatedOwnedHeroList;
         }
 
         public bool IsHeroAlreadyInCurrentTeam(PlayerOwnedHeroData heroData)

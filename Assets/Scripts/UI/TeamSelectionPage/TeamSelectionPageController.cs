@@ -5,6 +5,7 @@ using UI.MainMenuPage;
 using UI.PreBattlePage;
 using UnityEngine;
 using UnityEngine.UI;
+using Utilities;
 
 namespace UI.TeamSelectionPage
 {
@@ -12,10 +13,9 @@ namespace UI.TeamSelectionPage
     {
         [Header("Visual References")]
         [SerializeField] private GameObject layoutObject;
-
         [SerializeField] private GridLayoutGroup ownedHeroesGrid;
         [SerializeField] private Button backButton;
-
+        [SerializeField] private Button battleButton; 
         [Header("Date References")] 
         [SerializeField] private GameObject heroIconPrefab;
 
@@ -45,8 +45,22 @@ namespace UI.TeamSelectionPage
         {
             backButton.onClick.RemoveAllListeners();
             backButton.onClick.AddListener(TransitionToPreBattle);
+            battleButton.onClick.RemoveAllListeners();
+            battleButton.onClick.AddListener(TransitionToBattle);
         }
-        
+
+        private void TransitionToBattle()
+        {
+            if (_playerDataController.GetCurrentTeamList().Count < Globals.MaxUnitInTeam)
+            {
+                Signaler.Instance.Broadcast(this, new ShowWarningText{text = Globals.BattleTeamUnitRequirementHint});
+                return;
+            }
+            
+            layoutObject.SetActive(false);
+            Signaler.Instance.Broadcast(this, new TransitionToBattle());
+        }
+
         private void TransitionToPreBattle()
         {
             layoutObject.SetActive(false);

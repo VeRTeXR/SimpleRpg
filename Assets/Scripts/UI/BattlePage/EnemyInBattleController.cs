@@ -67,6 +67,7 @@ namespace UI.BattlePage
             enemyIcon.color = _enemyData.enemyColor;
             _currentHealth = _enemyData.totalHp;
             _healthBarController.SetFill(_enemyData.totalHp, _currentHealth);
+            EnableOutline(false);
         }
 
         public void OnDamage(int selectedHeroAttackPoint)

@@ -29,6 +29,13 @@ namespace UI.RoundSummaryPage
         private void Awake()
         {
             Signaler.Instance.Subscribe<BattleRoundOver>(this, OnBattleRoundOver);
+            Signaler.Instance.Subscribe<GameOver>(this,OnGameOver);
+        }
+
+        private bool OnGameOver(GameOver signal)
+        {
+            layoutObject.SetActive(false);
+            return true;
         }
 
         private void Start()
@@ -50,7 +57,7 @@ namespace UI.RoundSummaryPage
             PopulateVisual(signal.isPlayerWin);
             UpdatePlayerTeamStatus(signal.inBattleHeroList);
             IncrementPlayerRound();
-
+            _playerDataController.SavePlayerData();
             return true;
         }
         private void UpdatePlayerTeamStatus(List<PlayerInBattleHeroController> playerInBattleHeroControllers)
@@ -82,7 +89,6 @@ namespace UI.RoundSummaryPage
 
             var levelUpUnitList = _playerDataController.IncrementExpForEachUnit();
             inTeamHeroStatusSummaryController.Animate(_playerDataController.GetCurrentTeamList(),levelUpUnitList);
-            //TODO:: Show levelup units
             _playerDataController.SavePlayerData();
         }
 

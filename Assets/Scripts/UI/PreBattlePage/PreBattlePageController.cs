@@ -6,6 +6,7 @@ using TMPro;
 using UI.MainMenuPage;
 using UnityEngine;
 using UnityEngine.UI;
+using Utilities;
 using Debug = UnityEngine.Debug;
 
 namespace UI.PreBattlePage
@@ -26,7 +27,14 @@ namespace UI.PreBattlePage
 
         private void Awake()
         {
+            Signaler.Instance.Subscribe<GameOver>(this, OnGameOver);
             Signaler.Instance.Subscribe<TransitionToPreBattle>(this, OnTransitionToPreBattle);
+        }
+
+        private bool OnGameOver(GameOver signal)
+        {
+            preBattleLayoutObject.SetActive(false);
+            return true;
         }
 
         private bool OnTransitionToPreBattle(TransitionToPreBattle signal)
@@ -50,7 +58,13 @@ namespace UI.PreBattlePage
 
         private void TransitionToBattle()
         {
-            ClearExistingDisplay();
+            if (_playerDataController.GetCurrentTeamList().Count < Globals.MaxUnitInTeam)
+            {
+                Signaler.Instance.Broadcast(this, new ShowWarningText{text = Globals.BattleTeamUnitRequirementHint});
+                return;
+            }
+
+            ClearExistingDisplay();            
             Signaler.Instance.Broadcast(this, new TransitionToBattle());
         }
 

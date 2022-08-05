@@ -29,10 +29,17 @@ namespace UI.BattlePage
         private void Awake()
         {
             Signaler.Instance.Subscribe<TransitionToPreBattle>(this, OnTransitionToPreBattle);
+            Signaler.Instance.Subscribe<TransitionToTeamSelection>(this, OnTransitionToTeamSelection);
             Signaler.Instance.Subscribe<TransitionToBattle>(this, OnTransitionToBattle);
             Signaler.Instance.Subscribe<ClearBattleSelectionArrow>(this, OnClearSelectionArrow);
             Signaler.Instance.Subscribe<PlayerHeroKilled>(this, OnPlayerHeroKilled);
             Signaler.Instance.Broadcast(this, new RequestPlayerDataController{requester = this});
+        }
+
+        private bool OnTransitionToTeamSelection(TransitionToTeamSelection signal)
+        {
+            ClearExistingObjects();
+            return true;
         }
 
         private bool OnTransitionToPreBattle(TransitionToPreBattle signal)
