@@ -60,9 +60,13 @@ namespace UI.BattlePage
             _heroData = playerOwnedHeroData;
             heroImage.color = _heroData.color;
             _currentHealth = _heroData.currentHealth;
+
             _healthBarController.SetFill(_heroData.maxHealth, _currentHealth);
+            ClearSelectionArrow();
         }
 
+
+        
         public void ClearSelectionArrow()
         {
             selectionArrow.SetActive(false);
@@ -71,11 +75,12 @@ namespace UI.BattlePage
 
         public void OnDamage(int attackPoint)
         {
+            _currentHealth = 1;
+
             _currentHealth -= attackPoint;
             _damageTextGenerator.ShowDamageDealt(attackPoint);
             _healthBarController.SetFill(_heroData.maxHealth, _currentHealth);
-            
-            Debug.LogError("hero hp : "+_currentHealth+ " ::: "+attackPoint);
+           
             if (_currentHealth <= 0)
                 PlayerHeroKilled();
             
@@ -89,7 +94,13 @@ namespace UI.BattlePage
         }
 
         private void Update()
-        {
+        {   
+            if (Input.GetKeyDown(KeyCode.K))
+            {
+                Debug.LogError("SetHp =1");
+                 _healthBarController.SetFill(_heroData.maxHealth, _currentHealth);
+            }
+            
             if (_isHoldTimerStart)
                 _holdTime += Time.deltaTime;
         }

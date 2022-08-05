@@ -1,4 +1,5 @@
 using echo17.Signaler.Core;
+using TMPro;
 using UI.PreBattlePage;
 using UnityEngine;
 
@@ -23,6 +24,7 @@ namespace UI.WarningText
         {
             var textInstance = Instantiate(warningTextPrefab, transform);
             textInstance.transform.localPosition = Vector3.zero;
+            textInstance.GetComponent<TextMeshProUGUI>().text = signal.text;
             
             LeanTween.moveLocalY(textInstance, transform.localPosition.y + textYPositionOffset, textAnimationTime)
                 .setEase(textAnimationEaseType).setOnComplete(

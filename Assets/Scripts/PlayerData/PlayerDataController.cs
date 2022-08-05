@@ -10,7 +10,7 @@ using Random = UnityEngine.Random;
 
 namespace PlayerData
 {
-    public class PlayerDataController : MonoBehaviour,ISubscriber
+    public class PlayerDataController : MonoBehaviour,ISubscriber, IBroadcaster
     {
         [Header("Data References")]
         [SerializeField] private HeroDataPool heroDataPool;
@@ -21,9 +21,18 @@ namespace PlayerData
         private void Awake()
         {
             Signaler.Instance.Subscribe<RequestPlayerDataController>(this, OnRequestPlayerDataController);
+            Signaler.Instance.Subscribe<RegeneratePlayerData>(this, OnRegeneratePlayerData);
+            
             PopulatePlayerSaveData();
         }
 
+        private bool OnRegeneratePlayerData(RegeneratePlayerData signal)
+        {
+            GenerateNewPlayerProgressData();
+            return true;
+        }
+
+        
         private bool OnRequestPlayerDataController(RequestPlayerDataController signal)
         {
             signal.requester.SetPlayerDataController(this);
@@ -120,11 +129,15 @@ namespace PlayerData
 
         public void UpdateCurrentTeamHealth(List<PlayerInBattleHeroController> heroListFromBattle)
         {
-            var currentTeam = _playerProgress.currentTeam;
+            var currentTeam = new List<PlayerOwnedHeroData>(_playerProgress.currentTeam);
 
             if (heroListFromBattle == null || heroListFromBattle.Count <= 0)
             {
+                foreach (var inTeamHeroData in _playerProgress.currentTeam) 
+                    RemovedFromOwnedUnit(inTeamHeroData);
                 _playerProgress.currentTeam = new List<PlayerOwnedHeroData>();
+
+                GameOverCheck();
                 return;
             }
             
@@ -137,12 +150,35 @@ namespace PlayerData
             foreach (var inBattleHeroController in heroListFromBattle)
                 remainingHeroDataList.Add(inBattleHeroController.HeroData);
             
-            if (heroListFromBattle.Count != _playerProgress.currentTeam.Count)
+            var updatedInTeamHeroList = new List<PlayerOwnedHeroData>();
+            if (heroListFromBattle.Count != currentTeam.Count)
                 foreach (var currentTeamHeroData in currentTeam)
-                    if (!remainingHeroDataList.Contains(currentTeamHeroData))
-                        currentTeam.Remove(currentTeamHeroData);
+                    if (remainingHeroDataList.Contains(currentTeamHeroData))
+                        updatedInTeamHeroList.Add(currentTeamHeroData);
+                    else
+                        RemovedFromOwnedUnit(currentTeamHeroData);
+            
+            
+            _playerProgress.currentTeam = updatedInTeamHeroList;
 
-            _playerProgress.currentTeam = currentTeam;
+            GameOverCheck();
+        }
+
+        private void GameOverCheck()
+        {
+            if (GetOwnedHeroList().Count < 3 && _playerProgress.currentTeam.Count < Globals.MaxUnitInTeam)
+            {
+                Signaler.Instance.Broadcast(this, new GameOver());
+                //Todo:: Trigger game over since player wouldn't have enough unit to enter the next battle round
+                Debug.LogError("trigger Game Over!");    
+            }
+            
+        }
+
+        private void RemovedFromOwnedUnit(PlayerOwnedHeroData currentTeamHeroData)
+        {
+            if (_playerProgress.playerOwnedHeroList.Contains(currentTeamHeroData))
+                _playerProgress.playerOwnedHeroList.Remove(currentTeamHeroData);
         }
 
         public bool IsHeroAlreadyInCurrentTeam(PlayerOwnedHeroData heroData)

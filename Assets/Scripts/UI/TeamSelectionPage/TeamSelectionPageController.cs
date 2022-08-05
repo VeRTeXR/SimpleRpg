@@ -12,10 +12,9 @@ namespace UI.TeamSelectionPage
     {
         [Header("Visual References")]
         [SerializeField] private GameObject layoutObject;
-
         [SerializeField] private GridLayoutGroup ownedHeroesGrid;
         [SerializeField] private Button backButton;
-
+        [SerializeField] private Button battleButton; 
         [Header("Date References")] 
         [SerializeField] private GameObject heroIconPrefab;
 
@@ -45,8 +44,16 @@ namespace UI.TeamSelectionPage
         {
             backButton.onClick.RemoveAllListeners();
             backButton.onClick.AddListener(TransitionToPreBattle);
+            battleButton.onClick.RemoveAllListeners();
+            battleButton.onClick.AddListener(TransitionToBattle);
         }
-        
+
+        private void TransitionToBattle()
+        {
+            layoutObject.SetActive(false);
+            Signaler.Instance.Broadcast(this, new TransitionToBattle());
+        }
+
         private void TransitionToPreBattle()
         {
             layoutObject.SetActive(false);
