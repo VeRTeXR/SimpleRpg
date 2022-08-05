@@ -166,15 +166,20 @@ namespace PlayerData
             _playerProgress.currentTeam.Add(heroData);
         }
 
-        public void IncrementExpForEachUnit()
+        public List<PlayerOwnedHeroData> IncrementExpForEachUnit()
         {
+            var levelUpUnitList = new List<PlayerOwnedHeroData>();
             foreach (var inTeamHeroData in _playerProgress.currentTeam)
             {
                 inTeamHeroData.experience += 1;
-                if(inTeamHeroData.experience >= Globals.LevelExperienceLimit)
+                if (inTeamHeroData.experience >= Globals.LevelExperienceLimit)
+                {
+                    levelUpUnitList.Add(inTeamHeroData);
                     IncrementUnitLevel(inTeamHeroData);
+                }
             }
-            
+
+            return levelUpUnitList;
         }
 
         private void IncrementUnitLevel(PlayerOwnedHeroData inTeamHeroData)

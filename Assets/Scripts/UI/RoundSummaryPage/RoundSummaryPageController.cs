@@ -1,12 +1,12 @@
-using System;
 using System.Collections.Generic;
 using echo17.Signaler.Core;
 using PlayerData;
 using TMPro;
 using UI.BattlePage;
 using UI.MainMenuPage;
-using Unity.VisualScripting;
+using UI.PreBattlePage;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Utilities;
 
@@ -16,9 +16,12 @@ namespace UI.RoundSummaryPage
     {
         [Header("Visual References")]
         [SerializeField] private Button backToPreBattleButton;
+        [SerializeField] private Button backToTeamSelectionButton;
         [SerializeField] private TextMeshProUGUI roundStateText;
         [SerializeField] private GameObject layoutObject;
         [SerializeField] private GrantHeroPopupController grantHeroPopupController;
+        [SerializeField] private InTeamHeroStatusSummaryController inTeamHeroStatusSummaryController;
+        
         
         private PlayerDataController _playerDataController;
 
@@ -68,18 +71,18 @@ namespace UI.RoundSummaryPage
         private void IncrementPlayerRound()
         {
             _playerDataController.IncrementRound();
-            // if (_playerDataController.GetCurrentPlayerRound() % 5 == 0)
-            // {
+            if (_playerDataController.GetCurrentPlayerRound() % 5 == 0)
+            {
                 if (_playerDataController.GetOwnedHeroList().Count < Globals.HeroInventoryLimit)
                 {
-                    var grantedHero = _playerDataController.GrantRandomHero();
-                    Debug.LogError(grantedHero.id);
-                    grantHeroPopupController.ShowPopup(grantedHero);
-                    //TODO:: Show hero grant popup??
+                    var grantedHeroData = _playerDataController.GrantRandomHero();
+                    grantHeroPopupController.ShowPopup(grantedHeroData);
                 }
-            // }
+            }
 
-            _playerDataController.IncrementExpForEachUnit();
+            var levelUpUnitList = _playerDataController.IncrementExpForEachUnit();
+            inTeamHeroStatusSummaryController.Animate(_playerDataController.GetCurrentTeamList(),levelUpUnitList);
+            //TODO:: Show levelup units
             _playerDataController.SavePlayerData();
         }
 
@@ -87,6 +90,15 @@ namespace UI.RoundSummaryPage
         {
             backToPreBattleButton.onClick.RemoveAllListeners();
             backToPreBattleButton.onClick.AddListener(TransitionBackToPreBattle);
+            
+            backToTeamSelectionButton.onClick.RemoveAllListeners();
+            backToTeamSelectionButton.onClick.AddListener(TransitionBackToTeamSelection);
+        }
+
+        private void TransitionBackToTeamSelection()
+        {
+            layoutObject.SetActive(false);
+            Signaler.Instance.Broadcast(this, new TransitionToTeamSelection());
         }
 
         private void TransitionBackToPreBattle()
