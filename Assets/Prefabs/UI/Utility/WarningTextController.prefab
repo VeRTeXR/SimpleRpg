@@ -50,3 +50,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   warningTextPrefab: {fileID: 8191214488345863425, guid: eb9bf0f80a1305a418c5e042c738cee1, type: 3}
+  textYPositionOffset: 80
+  textAnimationEaseType: 7
+  textAnimationTime: 1.5

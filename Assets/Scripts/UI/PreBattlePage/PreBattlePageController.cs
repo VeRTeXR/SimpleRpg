@@ -89,8 +89,7 @@ namespace UI.PreBattlePage
             foreach (var ownedHero in currentTeam)
             {
                 var heroDisplayObject = Instantiate(heroDisplayPrefab, selectedHeroesLayoutGroup.transform);
-                heroDisplayObject.GetComponent<HeroDisplayController>().Initialize(ownedHero,_playerDataController);
-
+                heroDisplayObject.GetComponent<HeroDisplayController>().InitializeDisplay(ownedHero);
                 _heroDisplayObjectList.Add(heroDisplayObject);
             }
         }

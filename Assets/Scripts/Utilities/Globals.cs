@@ -23,8 +23,10 @@ namespace Utilities
         public static int MaxUnitInTeam = 3;
         public static int LevelExperienceLimit = 10;
         public static int HeroInventoryLimit = 10;
-        public static double TriggerSelectionTime = 1f;
+        public static float TriggerSelectionTime = 1f;
         public static int StarterUnitCount = 3;
+        public static float TriggerBattleHeroDetailTooltipTime=  1f;
+
         #endregion
     }
 }

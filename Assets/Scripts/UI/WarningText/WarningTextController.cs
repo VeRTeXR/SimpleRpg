@@ -8,6 +8,12 @@ namespace UI.WarningText
     {
         [SerializeField] private GameObject warningTextPrefab;
         
+        [Header("Animation Attributes")]
+        [SerializeField] private float textYPositionOffset = 30f;
+        [SerializeField] private LeanTweenType textAnimationEaseType = LeanTweenType.easeInCirc;
+        [SerializeField] private float textAnimationTime = 1.5f;
+
+
         private void Awake()
         {
             Signaler.Instance.Subscribe<ShowWarningText>(this, OnShowWarningText);
@@ -17,13 +23,10 @@ namespace UI.WarningText
         {
             var textInstance = Instantiate(warningTextPrefab, transform);
             textInstance.transform.localPosition = Vector3.zero;
-
-            //TODO:: Prettify text animation here
-            var seq = LeanTween.sequence();
-            seq.append(2);
-            seq.append(
-                () => { Destroy(textInstance); });
-
+            
+            LeanTween.moveLocalY(textInstance, transform.localPosition.y + textYPositionOffset, textAnimationTime)
+                .setEase(textAnimationEaseType).setOnComplete(
+                    () => { Destroy(textInstance); });
             return true;
         }
     }

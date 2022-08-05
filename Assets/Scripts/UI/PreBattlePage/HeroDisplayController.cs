@@ -18,6 +18,7 @@ namespace UI.PreBattlePage
         private float _holdTime;
         private PlayerDataController _playerDataController;
         private bool _isDisplayOnly;
+        private LTDescr _holdAnimationTween;
 
 
         public void Initialize(PlayerOwnedHeroData ownedHeroData, PlayerDataController playerDataController)
@@ -36,6 +37,8 @@ namespace UI.PreBattlePage
             _isDisplayOnly = true;
             _heroData = ownedHeroData;
             heroImage.color = ownedHeroData.color;
+            
+            RefreshSelectionStatus();
         }
         
         private void Update()
@@ -46,12 +49,24 @@ namespace UI.PreBattlePage
 
         public void OnPointerDown(PointerEventData eventData)
         {
+            if (!_isHoldTimerStart)
+                AnimateHold();
             _isHoldTimerStart = true;
+        }
+
+        private void AnimateHold()
+        {
+            _holdAnimationTween = LeanTween
+                .scale(gameObject, new Vector3(1.1f, 1.1f, 1.1f), Globals.TriggerSelectionTime)
+                .setEase(LeanTweenType.pingPong);
         }
 
         public void OnPointerUp(PointerEventData eventData)
         {
             Debug.LogError(_holdTime);
+            LeanTween.cancel(gameObject);
+            gameObject.transform.localScale = Vector3.one;
+            
             if (_holdTime < Globals.TriggerSelectionTime)
                 ShowDetailTooltip();
             else
@@ -67,19 +82,20 @@ namespace UI.PreBattlePage
             
             if (_playerDataController.IsHeroAlreadyInCurrentTeam(_heroData))
             {
-                Debug.LogError("Unequip");
                 _playerDataController.UnequipHeroFromCurrentTeam(_heroData);
-                RefreshSelectionStatus();
                 _playerDataController.SavePlayerData();
+                
+                RefreshSelectionStatus();
+
                 return;
             }
 
             if (_playerDataController.GetCurrentTeamList().Count < Globals.MaxUnitInTeam)
             {
-                Debug.LogError("Equip");
                 _playerDataController.EquipHeroToCurrentTeam(_heroData);
-                RefreshSelectionStatus();
                 _playerDataController.SavePlayerData();
+                
+                RefreshSelectionStatus();
             }
             else
                 Signaler.Instance.Broadcast(this, new ShowWarningText {text = Globals.TeamFullWarning});
@@ -90,10 +106,20 @@ namespace UI.PreBattlePage
             if (_isDisplayOnly)
             {
                 selectedOutlineImage.gameObject.SetActive(false);
-                return;
+                selectedOutlineImage.transform.localScale = Vector3.zero;
             }
-            
-            selectedOutlineImage.gameObject.SetActive(_playerDataController.IsHeroAlreadyInCurrentTeam(_heroData));
+            else
+            {
+                if (_playerDataController.IsHeroAlreadyInCurrentTeam(_heroData))
+                {
+                    selectedOutlineImage.gameObject.SetActive(true);
+                    LeanTween.scale(selectedOutlineImage.gameObject, new Vector3(1.2f, 1.2f, 1.2f), 0.25f);
+                }
+                else
+                {
+                    LeanTween.scale(selectedOutlineImage.gameObject, Vector3.zero, 0.25f);
+                }
+            }
         }
 
         private void ShowDetailTooltip()

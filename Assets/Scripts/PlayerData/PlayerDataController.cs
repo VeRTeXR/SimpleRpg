@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Data;
 using echo17.Signaler.Core;
 using UI.BattlePage;
@@ -146,19 +147,20 @@ namespace PlayerData
 
         public bool IsHeroAlreadyInCurrentTeam(PlayerOwnedHeroData heroData)
         {
-            foreach (var inTeamHero in GetCurrentTeamList())
-            {
-                if (inTeamHero == null) continue;
-                if (inTeamHero.id == heroData.id)
-                    return true;
-            }
-
-            return false;
+            var currentTeam = GetCurrentTeamList();
+            return currentTeam.Any(inTeamHeroData => string.Equals(heroData.id, inTeamHeroData.id));
         }
 
         public void UnequipHeroFromCurrentTeam(PlayerOwnedHeroData heroData)
         {
-            _playerProgress.currentTeam.Remove(heroData);
+            var modifiedTeam = new List<PlayerOwnedHeroData>();
+            foreach (var currentTeamHeroData in _playerProgress.currentTeam)
+            {
+                if(heroData.id == currentTeamHeroData.id)
+                    continue;
+                modifiedTeam.Add(currentTeamHeroData);
+            }
+            _playerProgress.currentTeam = modifiedTeam;
         }
 
         public void EquipHeroToCurrentTeam(PlayerOwnedHeroData heroData)
