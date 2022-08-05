@@ -5,6 +5,7 @@ using UI.MainMenuPage;
 using UI.PreBattlePage;
 using UnityEngine;
 using UnityEngine.UI;
+using Utilities;
 
 namespace UI.TeamSelectionPage
 {
@@ -50,6 +51,12 @@ namespace UI.TeamSelectionPage
 
         private void TransitionToBattle()
         {
+            if (_playerDataController.GetCurrentTeamList().Count < Globals.MaxUnitInTeam)
+            {
+                Signaler.Instance.Broadcast(this, new ShowWarningText{text = Globals.BattleTeamUnitRequirementHint});
+                return;
+            }
+            
             layoutObject.SetActive(false);
             Signaler.Instance.Broadcast(this, new TransitionToBattle());
         }
