@@ -522,7 +522,7 @@ MonoBehaviour:
   backToPreBattleButton: {fileID: 4695899899249075689}
   roundStateText: {fileID: 4516772900902748045}
   layoutObject: {fileID: 6822763952739413892}
-  grantHeroPopupController: {fileID: 0}
+  grantHeroPopupController: {fileID: 9054047016261121524}
 --- !u!1 &6822763952739413892
 GameObject:
   m_ObjectHideFlags: 0
@@ -668,3 +668,14 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 3523182691115576320, guid: 108206df6c10ea540a606176b2a3dcef, type: 3}
   m_PrefabInstance: {fileID: 893060947072197794}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9054047016261121524 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8197296762091655510, guid: 108206df6c10ea540a606176b2a3dcef, type: 3}
+  m_PrefabInstance: {fileID: 893060947072197794}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d9859061b1643f283ffeff613663fee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

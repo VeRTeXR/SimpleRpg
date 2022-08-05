@@ -79,6 +79,7 @@ namespace UI.RoundSummaryPage
                 }
             // }
 
+            _playerDataController.IncrementExpForEachUnit();
             _playerDataController.SavePlayerData();
         }
 

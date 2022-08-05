@@ -165,5 +165,25 @@ namespace PlayerData
         {
             _playerProgress.currentTeam.Add(heroData);
         }
+
+        public void IncrementExpForEachUnit()
+        {
+            foreach (var inTeamHeroData in _playerProgress.currentTeam)
+            {
+                inTeamHeroData.experience += 1;
+                if(inTeamHeroData.experience >= Globals.LevelExperienceLimit)
+                    IncrementUnitLevel(inTeamHeroData);
+            }
+            
+        }
+
+        private void IncrementUnitLevel(PlayerOwnedHeroData inTeamHeroData)
+        {
+            inTeamHeroData.experience = 0;
+            inTeamHeroData.level++;
+            inTeamHeroData.maxHealth = Mathf.CeilToInt(inTeamHeroData.maxHealth * 1.1f);
+            inTeamHeroData.currentHealth = inTeamHeroData.maxHealth;
+            inTeamHeroData.attack = Mathf.CeilToInt(inTeamHeroData.attack * 1.1f);            
+        }
     }
 }

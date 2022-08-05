@@ -44,13 +44,12 @@ namespace UI.PreBattlePage
 
         public void OnPointerUp(PointerEventData eventData)
         {
-            //TODO:: Enable tooltip here!
             Debug.LogError(_holdTime);
             if (_holdTime < Globals.TriggerSelectionTime)
+                ShowDetailTooltip();
+            else
                 HeroSelection();
-                // ShowDetailTooltip();
-            // else
-                // HeroSelection();
+            
             _isHoldTimerStart = false;
             _holdTime = 0;
         }
