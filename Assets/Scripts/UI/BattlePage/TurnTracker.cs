@@ -47,8 +47,15 @@ namespace UI.BattlePage
             turnText.gameObject.SetActive(true);
             turnText.text = Globals.EnemyTurn;
 
+            var seq = LeanTween.sequence();
             var targetHero = RandomizeTargetForEnemy();
-            ApplyDamageToHero(targetHero, signal.enemyController); 
+            // seq.append(()) // todo;; show target indication animation
+            seq.append(2f);
+            seq.append(() =>
+            {
+                ApplyDamageToHero(targetHero, signal.enemyController);
+
+            });
             
             return true;
         }

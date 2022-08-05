@@ -14,7 +14,8 @@ namespace UI.BattlePage
         [Header("Visual References")]
         [SerializeField] private Image heroImage;
         [SerializeField] private GameObject selectionArrow;
-
+        [SerializeField] private GameObject selectionOutline;
+        
         private PlayerOwnedHeroData _heroData;
         
         private int _currentHealth;
@@ -65,6 +66,7 @@ namespace UI.BattlePage
         public void ClearSelectionArrow()
         {
             selectionArrow.SetActive(false);
+            selectionOutline.SetActive(false);
         }
 
         public void OnDamage(int attackPoint)
@@ -116,7 +118,12 @@ namespace UI.BattlePage
             else
             {
                 Signaler.Instance.Broadcast(this, new ClearBattleSelectionArrow());
+
+                selectionOutline.transform.localScale = Vector3.zero;
+                selectionOutline.SetActive(true);
+                LeanTween.scale(selectionOutline, new Vector3(1.2f, 1.2f, 1.2f), 0.2f);
                 selectionArrow.SetActive(true);
+                
                 Signaler.Instance.Broadcast(this, new PlayerSelectHero {heroController = this});
                 Signaler.Instance.Broadcast(this, new StartTargetSelectionPhase());
             }
