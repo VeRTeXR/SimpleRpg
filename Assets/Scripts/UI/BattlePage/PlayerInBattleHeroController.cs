@@ -1,26 +1,31 @@
 ﻿using System;
 using echo17.Signaler.Core;
 using PlayerData;
+using UI.PreBattlePage;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Utilities;
 
 namespace UI.BattlePage
 {
-    public class PlayerInBattleHeroController: MonoBehaviour, IBroadcaster, ISubscriber
+    public class PlayerInBattleHeroController: MonoBehaviour, IBroadcaster, ISubscriber, IPointerDownHandler,IPointerUpHandler
     {
         [Header("Visual References")]
-        [SerializeField] private Button heroButton;
         [SerializeField] private Image heroImage;
         [SerializeField] private GameObject selectionArrow;
 
         private PlayerOwnedHeroData _heroData;
-        private bool _isInUnitSelectionPhase;
+        
         private int _currentHealth;
 
         private DamageTextGenerator _damageTextGenerator;
         private HealthBarController _healthBarController;
         private MessageSubscription<StartEnemyTurn> _startEnemyTurnSubscription;
         private MessageSubscription<StartPlayerUnitSelection> _startPlayerUnitSelectionSubscription;
+        private bool _isHoldTimerStart;
+        private float _holdTime;
+        private bool _isPlayerTurn;
         public PlayerOwnedHeroData HeroData => _heroData;
         public int CurrentHealth => _currentHealth;
         public string Id=> _heroData.id;
@@ -37,14 +42,14 @@ namespace UI.BattlePage
 
         private bool OnEnemyTurnStart(StartEnemyTurn signal)
         {
-            heroButton.enabled = false;
+            ResetHoldInput();
+            SetIsPlayerTurn(false);
             return true;
         }
 
         private bool OnStartPlayerUnitSelection(StartPlayerUnitSelection signal)
         {
-            heroButton.enabled = true;
-            _isInUnitSelectionPhase = true;
+            SetIsPlayerTurn(true);
             return true;
         }
 
@@ -55,24 +60,7 @@ namespace UI.BattlePage
             heroImage.color = _heroData.color;
             _currentHealth = _heroData.currentHealth;
             _healthBarController.SetFill(_heroData.maxHealth, _currentHealth);
-            
-            SetupButtonEvent();
         }
-
-        private void SetupButtonEvent()
-        {
-            heroButton.onClick.RemoveAllListeners();
-            heroButton.onClick.AddListener(TriggerHeroSelection);
-        }
-
-        private void TriggerHeroSelection()
-        {
-            Signaler.Instance.Broadcast(this, new ClearBattleSelectionArrow());
-            selectionArrow.SetActive(true);
-            Signaler.Instance.Broadcast(this, new PlayerSelectHero {heroController = this});
-            Signaler.Instance.Broadcast(this, new StartTargetSelectionPhase());
-        }
-
 
         public void ClearSelectionArrow()
         {
@@ -95,13 +83,54 @@ namespace UI.BattlePage
         private void PlayerHeroKilled()
         {
             //TODO:: trigger dead animation seq
-            Signaler.Instance.Broadcast(this, new PlayerHeroKilled {heroController= this });
+            Signaler.Instance.Broadcast(this, new PlayerHeroKilled {heroController = this});
         }
 
+        private void Update()
+        {
+            if (_isHoldTimerStart)
+                _holdTime += Time.deltaTime;
+        }
+        
         private void OnDestroy()
         {
             _startEnemyTurnSubscription.UnSubscribe();
             _startPlayerUnitSelectionSubscription.UnSubscribe();
+        }
+
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            if (!_isPlayerTurn) return;
+            _isHoldTimerStart = true;
+        }
+
+        public void OnPointerUp(PointerEventData eventData)
+        {            
+            if (!_isPlayerTurn) return;
+                
+            ResetHoldInput();
+
+            if (_holdTime > Globals.TriggerBattleHeroDetailTooltipTime)
+                Signaler.Instance.Broadcast(this,
+                    new ShowUnitTooltip {ownedUnitData = _heroData, requesterObject = gameObject});
+            else
+            {
+                Signaler.Instance.Broadcast(this, new ClearBattleSelectionArrow());
+                selectionArrow.SetActive(true);
+                Signaler.Instance.Broadcast(this, new PlayerSelectHero {heroController = this});
+                Signaler.Instance.Broadcast(this, new StartTargetSelectionPhase());
+            }
+        }
+                
+        private void ResetHoldInput()
+        {
+            _holdTime = 0;
+            _isHoldTimerStart = false;
+        }
+
+        public void SetIsPlayerTurn(bool isPlayerTurn)
+        {
+            _isPlayerTurn = isPlayerTurn;
         }
     }
 }

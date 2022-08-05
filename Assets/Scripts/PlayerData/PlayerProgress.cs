@@ -7,9 +7,7 @@ namespace PlayerData
     public class PlayerProgress
     {
         public int battleRound = 1;
-        public Dictionary<int, PlayerOwnedHeroData> heroIndexToOwnedHeroDataPair =
-            new Dictionary<int, PlayerOwnedHeroData>();
+        public List<PlayerOwnedHeroData> playerOwnedHeroList = new List<PlayerOwnedHeroData>();
         public List<PlayerOwnedHeroData> currentTeam = new List<PlayerOwnedHeroData>();
-
     }
 }

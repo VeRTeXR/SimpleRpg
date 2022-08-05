@@ -88,6 +88,8 @@ namespace UI.BattlePage
         private bool OnBattleStart(BattleStart signal)
         {
             SetPlayerTurnText();
+            var heroesList = _battlePage.GetAvailableHeroes();
+            foreach (var playerInBattleHeroController in heroesList) playerInBattleHeroController.SetIsPlayerTurn(true);
             return true;
         }
 

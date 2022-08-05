@@ -63,12 +63,12 @@ namespace UI.TeamSelectionPage
 
         private void PopulateAllAvailableHeroes()
         {
-            var ownedHeroDictionary = _playerDataController.GetOwnedHeroDictionary();
-            foreach (var ownedHero in ownedHeroDictionary)
+            var ownedHeroList = _playerDataController.GetOwnedHeroList();
+            
+            foreach (var ownedHero in ownedHeroList)
             {
                 var heroIconObject = Instantiate(heroIconPrefab, ownedHeroesGrid.transform);
-                heroIconObject.GetComponent<HeroDisplayController>().Initialize(ownedHero.Value);
-
+                heroIconObject.GetComponent<HeroDisplayController>().Initialize(ownedHero, _playerDataController);
                 _heroObjectList.Add(heroIconObject);
             }
         }
