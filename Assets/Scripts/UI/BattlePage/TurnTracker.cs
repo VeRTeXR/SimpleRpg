@@ -49,12 +49,10 @@ namespace UI.BattlePage
 
             var seq = LeanTween.sequence();
             var targetHero = RandomizeTargetForEnemy();
-            // seq.append(()) // todo;; show target indication animation
-            seq.append(2f);
+            seq.append(1.4f);
             seq.append(() =>
             {
                 ApplyDamageToHero(targetHero, signal.enemyController);
-
             });
             
             return true;

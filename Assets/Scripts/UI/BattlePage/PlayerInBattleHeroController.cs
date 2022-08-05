@@ -112,7 +112,6 @@ namespace UI.BattlePage
         {            
             if (!_isPlayerTurn) return;
                 
-            ResetHoldInput();
 
             if (_holdTime > Globals.TriggerBattleHeroDetailTooltipTime)
                 Signaler.Instance.Broadcast(this,
@@ -129,6 +128,8 @@ namespace UI.BattlePage
                 Signaler.Instance.Broadcast(this, new PlayerSelectHero {heroController = this});
                 Signaler.Instance.Broadcast(this, new StartTargetSelectionPhase());
             }
+            
+            ResetHoldInput();
         }
                 
         private void ResetHoldInput()
