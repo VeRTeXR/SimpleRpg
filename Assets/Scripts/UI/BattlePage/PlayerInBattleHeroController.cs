@@ -75,8 +75,6 @@ namespace UI.BattlePage
 
         public void OnDamage(int attackPoint)
         {
-            _currentHealth = 1;
-
             _currentHealth -= attackPoint;
             _damageTextGenerator.ShowDamageDealt(attackPoint);
             _healthBarController.SetFill(_heroData.maxHealth, _currentHealth);
@@ -89,18 +87,11 @@ namespace UI.BattlePage
 
         private void PlayerHeroKilled()
         {
-            //TODO:: trigger dead animation seq
             Signaler.Instance.Broadcast(this, new PlayerHeroKilled {heroController = this});
         }
 
         private void Update()
-        {   
-            if (Input.GetKeyDown(KeyCode.K))
-            {
-                Debug.LogError("SetHp =1");
-                 _healthBarController.SetFill(_heroData.maxHealth, _currentHealth);
-            }
-            
+        {         
             if (_isHoldTimerStart)
                 _holdTime += Time.deltaTime;
         }

@@ -167,18 +167,19 @@ namespace PlayerData
         private void GameOverCheck()
         {
             if (GetOwnedHeroList().Count < 3 && _playerProgress.currentTeam.Count < Globals.MaxUnitInTeam)
-            {
                 Signaler.Instance.Broadcast(this, new GameOver());
-                //Todo:: Trigger game over since player wouldn't have enough unit to enter the next battle round
-                Debug.LogError("trigger Game Over!");    
-            }
-            
         }
 
         private void RemovedFromOwnedUnit(PlayerOwnedHeroData currentTeamHeroData)
         {
-            if (_playerProgress.playerOwnedHeroList.Contains(currentTeamHeroData))
-                _playerProgress.playerOwnedHeroList.Remove(currentTeamHeroData);
+            var updatedOwnedHeroList = new List<PlayerOwnedHeroData>();
+            foreach (var ownedHeroData in _playerProgress.playerOwnedHeroList)
+            {
+                if(!string.Equals(currentTeamHeroData.id, ownedHeroData.id))   
+                        updatedOwnedHeroList.Add(ownedHeroData);
+            }
+
+            _playerProgress.playerOwnedHeroList = updatedOwnedHeroList;
         }
 
         public bool IsHeroAlreadyInCurrentTeam(PlayerOwnedHeroData heroData)
