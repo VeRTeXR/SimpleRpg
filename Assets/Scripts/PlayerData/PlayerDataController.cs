@@ -91,7 +91,7 @@ namespace PlayerData
 
         private HeroData RandomizeHeroFromPool()
         {
-            var rngIndex = Random.Range(0, heroDataPool.heroDataList.Count-1);
+            var rngIndex = Random.Range(0, heroDataPool.heroDataList.Count);
             return heroDataPool.heroDataList[rngIndex]; 
         }
 
@@ -146,22 +146,27 @@ namespace PlayerData
                 if (string.Equals(playerOwnedHeroData.id, inBattleHeroController.Id))
                     playerOwnedHeroData.currentHealth = inBattleHeroController.CurrentHealth;
 
-            var remainingHeroDataList = new List<PlayerOwnedHeroData>();
-            foreach (var inBattleHeroController in heroListFromBattle)
-                remainingHeroDataList.Add(inBattleHeroController.HeroData);
             
             var updatedInTeamHeroList = new List<PlayerOwnedHeroData>();
             if (heroListFromBattle.Count != currentTeam.Count)
-                foreach (var currentTeamHeroData in currentTeam)
-                    if (remainingHeroDataList.Contains(currentTeamHeroData))
-                        updatedInTeamHeroList.Add(currentTeamHeroData);
-                    else
-                        RemovedFromOwnedUnit(currentTeamHeroData);
+            {
+                RemoveKilledHero(heroListFromBattle, currentTeam, updatedInTeamHeroList);
+            }
+      
             
-            
-            _playerProgress.currentTeam = updatedInTeamHeroList;
-
             GameOverCheck();
+        }
+
+        private void RemoveKilledHero(List<PlayerInBattleHeroController> heroListFromBattle, List<PlayerOwnedHeroData> currentTeam, List<PlayerOwnedHeroData> updatedInTeamHeroList)
+        {
+            foreach (var currentTeamHeroData in currentTeam)
+            foreach (var inBattleHeroController in heroListFromBattle)
+                if (inBattleHeroController.Id == currentTeamHeroData.id)
+                    updatedInTeamHeroList.Add(currentTeamHeroData);
+                else
+                    RemovedFromOwnedUnit(currentTeamHeroData);
+
+            _playerProgress.currentTeam = updatedInTeamHeroList;
         }
 
         private void GameOverCheck()
