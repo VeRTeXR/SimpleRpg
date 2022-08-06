@@ -17,9 +17,6 @@ namespace Utilities
         public static string BattleTeamUnitRequirementHint = "Battle only available for 3 unit team";
         #endregion
         
-        
-        
-        
         #region Configurations
         public static int MaxUnitInTeam = 3;
         public static int LevelExperienceLimit = 5;
@@ -28,6 +25,5 @@ namespace Utilities
         public static int StarterUnitCount = 3;
         public static int RoundToGrantHeroToPlayer = 5;
         #endregion
-
     }
 }

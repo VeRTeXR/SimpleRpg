@@ -112,9 +112,7 @@ namespace UI.PreBattlePage
                     LeanTween.scale(selectedOutlineImage.gameObject, new Vector3(1.2f, 1.2f, 1.2f), 0.25f);
                 }
                 else
-                {
                     LeanTween.scale(selectedOutlineImage.gameObject, Vector3.zero, 0.25f);
-                }
             }
         }
 
