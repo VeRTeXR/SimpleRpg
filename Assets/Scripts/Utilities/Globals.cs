@@ -22,12 +22,11 @@ namespace Utilities
         
         #region Configurations
         public static int MaxUnitInTeam = 3;
-        public static int LevelExperienceLimit = 10;
+        public static int LevelExperienceLimit = 5;
         public static int HeroInventoryLimit = 10;
-        public static float TriggerSelectionTime = 1f;
+        public static float ShowUnitTooltipTime = 3f;
         public static int StarterUnitCount = 3;
-        public static float TriggerBattleHeroDetailTooltipTime=  1f;
-
+        public static int RoundToGrantHeroToPlayer = 5;
         #endregion
 
     }

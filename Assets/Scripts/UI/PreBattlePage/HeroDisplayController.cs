@@ -18,7 +18,6 @@ namespace UI.PreBattlePage
         private float _holdTime;
         private PlayerDataController _playerDataController;
         private bool _isDisplayOnly;
-        private LTDescr _holdAnimationTween;
 
 
         public void Initialize(PlayerOwnedHeroData ownedHeroData, PlayerDataController playerDataController)
@@ -56,9 +55,7 @@ namespace UI.PreBattlePage
 
         private void AnimateHold()
         {
-            _holdAnimationTween = LeanTween
-                .scale(gameObject, new Vector3(1.1f, 1.1f, 1.1f), Globals.TriggerSelectionTime)
-                .setEase(LeanTweenType.pingPong);
+             LeanTween.scale(gameObject, new Vector3(1.1f, 1.1f, 1.1f), Globals.ShowUnitTooltipTime).setEase(LeanTweenType.pingPong);
         }
 
         public void OnPointerUp(PointerEventData eventData)
@@ -66,11 +63,11 @@ namespace UI.PreBattlePage
             Debug.LogError(_holdTime);
             LeanTween.cancel(gameObject);
             gameObject.transform.localScale = Vector3.one;
-            
-            if (_holdTime < Globals.TriggerSelectionTime)
-                ShowDetailTooltip();
-            else
+
+            if (_holdTime < Globals.ShowUnitTooltipTime)
                 HeroSelection();
+            else
+                ShowDetailTooltip();
             
             _isHoldTimerStart = false;
             _holdTime = 0;

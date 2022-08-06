@@ -78,7 +78,7 @@ namespace UI.RoundSummaryPage
         private void IncrementPlayerRound()
         {
             _playerDataController.IncrementRound();
-            if (_playerDataController.GetCurrentPlayerRound() % 5 == 0)
+            if (_playerDataController.GetCurrentPlayerRound() % Globals.RoundToGrantHeroToPlayer == 0)
             {
                 if (_playerDataController.GetOwnedHeroList().Count < Globals.HeroInventoryLimit)
                 {

@@ -27,7 +27,6 @@ namespace UI.BattlePage
         private bool _isHoldTimerStart;
         private float _holdTime;
         private bool _isPlayerTurn;
-        public PlayerOwnedHeroData HeroData => _heroData;
         public int CurrentHealth => _currentHealth;
         public string Id=> _heroData.id;
         public int AttackPoint => _heroData.attack;
@@ -113,9 +112,8 @@ namespace UI.BattlePage
             if (!_isPlayerTurn) return;
                 
 
-            if (_holdTime > Globals.TriggerBattleHeroDetailTooltipTime)
-                Signaler.Instance.Broadcast(this,
-                    new ShowUnitTooltip {ownedUnitData = _heroData, requesterObject = gameObject});
+            if (_holdTime > Globals.ShowUnitTooltipTime)
+                Signaler.Instance.Broadcast(this, new ShowUnitTooltip {ownedUnitData = _heroData, requesterObject = gameObject});
             else
             {
                 Signaler.Instance.Broadcast(this, new ClearBattleSelectionArrow());
