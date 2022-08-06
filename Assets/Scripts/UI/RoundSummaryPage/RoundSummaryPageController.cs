@@ -35,6 +35,7 @@ namespace UI.RoundSummaryPage
         private bool OnGameOver(GameOver signal)
         {
             layoutObject.SetActive(false);
+            grantHeroPopupController.Exit();
             return true;
         }
 
