@@ -13,7 +13,6 @@ namespace UI.BattlePage
     {
         [Header("Visual References")]
         [SerializeField] private Image heroImage;
-        [SerializeField] private GameObject selectionArrow;
         [SerializeField] private GameObject selectionOutline;
         
         private PlayerOwnedHeroData _heroData;
@@ -27,7 +26,6 @@ namespace UI.BattlePage
         private bool _isHoldTimerStart;
         private float _holdTime;
         private bool _isPlayerTurn;
-        public PlayerOwnedHeroData HeroData => _heroData;
         public int CurrentHealth => _currentHealth;
         public string Id=> _heroData.id;
         public int AttackPoint => _heroData.attack;
@@ -62,14 +60,13 @@ namespace UI.BattlePage
             _currentHealth = _heroData.currentHealth;
 
             _healthBarController.SetFill(_heroData.maxHealth, _currentHealth);
-            ClearSelectionArrow();
+            ClearSelection();
         }
 
 
         
-        public void ClearSelectionArrow()
+        public void ClearSelection()
         {
-            selectionArrow.SetActive(false);
             selectionOutline.SetActive(false);
         }
 
@@ -105,26 +102,34 @@ namespace UI.BattlePage
         public void OnPointerDown(PointerEventData eventData)
         {
             if (!_isPlayerTurn) return;
+
+            if (!_isHoldTimerStart) 
+                AnimateHold();
+            
             _isHoldTimerStart = true;
+        }
+
+        private void AnimateHold()
+        {
+            LeanTween.scale(gameObject, new Vector3(1.1f, 1.1f, 1.1f), Globals.ShowUnitTooltipTime).setEase(LeanTweenType.pingPong);
         }
 
         public void OnPointerUp(PointerEventData eventData)
         {            
             if (!_isPlayerTurn) return;
-                
+            
+            LeanTween.cancel(gameObject);
+            gameObject.transform.localScale = Vector3.one;
 
-            if (_holdTime > Globals.TriggerBattleHeroDetailTooltipTime)
-                Signaler.Instance.Broadcast(this,
-                    new ShowUnitTooltip {ownedUnitData = _heroData, requesterObject = gameObject});
+            if (_holdTime > Globals.ShowUnitTooltipTime)
+                Signaler.Instance.Broadcast(this, new ShowUnitTooltip {ownedUnitData = _heroData, requesterObject = gameObject});
             else
             {
                 Signaler.Instance.Broadcast(this, new ClearBattleSelectionArrow());
 
                 selectionOutline.transform.localScale = Vector3.zero;
                 selectionOutline.SetActive(true);
-                LeanTween.scale(selectionOutline, new Vector3(1.2f, 1.2f, 1.2f), 0.2f);
-                selectionArrow.SetActive(true);
-                
+                LeanTween.scale(selectionOutline, new Vector3(1.2f, 1.2f, 1.2f), 0.2f);    
                 Signaler.Instance.Broadcast(this, new PlayerSelectHero {heroController = this});
                 Signaler.Instance.Broadcast(this, new StartTargetSelectionPhase());
             }

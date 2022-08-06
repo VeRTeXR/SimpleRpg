@@ -77,7 +77,7 @@ namespace UI.BattlePage
 
         private bool OnClearSelectionArrow(ClearBattleSelectionArrow signal)
         {
-            foreach (var playerHero in _inBattleHeroList) playerHero.ClearSelectionArrow();
+            foreach (var playerHero in _inBattleHeroList) playerHero.ClearSelection();
             return true;
         }
 

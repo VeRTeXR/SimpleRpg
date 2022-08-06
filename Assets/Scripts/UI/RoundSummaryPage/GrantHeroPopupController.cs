@@ -39,7 +39,7 @@ namespace UI.RoundSummaryPage
             okButton.onClick.AddListener(Exit);
         }
 
-        private void Exit()
+        public void Exit()
         {
             gameObject.SetActive(false);
         }
