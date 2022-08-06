@@ -19,6 +19,9 @@ namespace UI.PreBattlePage
         [SerializeField] private GameObject preBattleLayoutObject;
         [SerializeField] private HorizontalLayoutGroup selectedHeroesLayoutGroup;
         [SerializeField] private TextMeshProUGUI currentRoundText;
+        [SerializeField] private TextMeshProUGUI noHeroInTeamText;
+        
+        
         [Header("Data References")] 
         [SerializeField] private GameObject heroDisplayPrefab;
 
@@ -29,6 +32,7 @@ namespace UI.PreBattlePage
         {
             Signaler.Instance.Subscribe<GameOver>(this, OnGameOver);
             Signaler.Instance.Subscribe<TransitionToPreBattle>(this, OnTransitionToPreBattle);
+            noHeroInTeamText.gameObject.SetActive(false);
         }
 
         private bool OnGameOver(GameOver signal)
@@ -53,7 +57,6 @@ namespace UI.PreBattlePage
             toTeamSelectionButton.onClick.AddListener(TransitionToTeamSelectionPage);
             toBattleButton.onClick.RemoveAllListeners();
             toBattleButton.onClick.AddListener(TransitionToBattle);
-
         }
 
         private void TransitionToBattle()
@@ -100,6 +103,13 @@ namespace UI.PreBattlePage
         private void PopulateCurrentlySelectedHeroes()
         {
             var currentTeam = _playerDataController.GetCurrentTeamList();
+            if (currentTeam.Count <= 0)
+            {
+                noHeroInTeamText.gameObject.SetActive(true);
+                return;
+            }
+            
+            noHeroInTeamText.gameObject.SetActive(false);
             foreach (var ownedHero in currentTeam)
             {
                 var heroDisplayObject = Instantiate(heroDisplayPrefab, selectedHeroesLayoutGroup.transform);

@@ -60,7 +60,6 @@ namespace UI.PreBattlePage
 
         public void OnPointerUp(PointerEventData eventData)
         {
-            Debug.LogError(_holdTime);
             LeanTween.cancel(gameObject);
             gameObject.transform.localScale = Vector3.one;
 
