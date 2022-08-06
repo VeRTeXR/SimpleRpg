@@ -1,4 +1,4 @@
-﻿using System;
+﻿using TMPro;
 using UnityEngine;
 
 namespace UI.BattlePage
@@ -7,17 +7,22 @@ namespace UI.BattlePage
     {
         [Header("Visual References")]
         [SerializeField] private Transform textParent;
+     
         [Header("Data References")]
         [SerializeField] private GameObject textPrefab;
-
+        
+        [Header("Animation Attributes")]
         [SerializeField] private LeanTweenType animationEase;
+        [SerializeField] private float animationYOffset = 150f;
+        [SerializeField] private float animationTime = 0.25f;
 
         public void ShowDamageDealt(int damage)
         {
             var textInstance = Instantiate(textPrefab, textParent);
             textInstance.transform.localPosition = Vector3.zero;
-
-            LeanTween.moveLocalY(textInstance, textInstance.transform.localPosition.y + 100, 0.25f)
+            textInstance.GetComponent<TextMeshProUGUI>().text = damage.ToString();
+            
+            LeanTween.moveLocalY(textInstance, textInstance.transform.localPosition.y + animationYOffset, animationTime)
                 .setEase(animationEase).setOnComplete(() =>
                 {
                     Destroy(textInstance);   

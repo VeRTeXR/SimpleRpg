@@ -160,31 +160,27 @@ namespace PlayerData
         private void RemoveKilledHero(List<PlayerInBattleHeroController> heroListFromBattle, List<PlayerOwnedHeroData> currentTeam, List<PlayerOwnedHeroData> updatedInTeamHeroList)
         {
             foreach (var currentTeamHeroData in currentTeam)
-            foreach (var inBattleHeroController in heroListFromBattle)
-                if (inBattleHeroController.Id == currentTeamHeroData.id)
-                    updatedInTeamHeroList.Add(currentTeamHeroData);
-                else
-                    RemovedFromOwnedUnit(currentTeamHeroData);
+                foreach (var inBattleHeroController in heroListFromBattle)
+                    if (string.Equals(inBattleHeroController.Id, currentTeamHeroData.id))
+                        updatedInTeamHeroList.Add(currentTeamHeroData);
+                    else
+                        RemovedFromOwnedUnit(currentTeamHeroData);
 
             _playerProgress.currentTeam = updatedInTeamHeroList;
         }
 
         private void GameOverCheck()
         {
-            if (GetOwnedHeroList().Count < 3 && _playerProgress.currentTeam.Count < Globals.MaxUnitInTeam)
+
+            var currentlyOwnedPlayerList = GetOwnedHeroList();
+            if (currentlyOwnedPlayerList.Count < 3 && _playerProgress.currentTeam.Count < Globals.MaxUnitInTeam)
                 Signaler.Instance.Broadcast(this, new GameOver());
         }
 
         private void RemovedFromOwnedUnit(PlayerOwnedHeroData currentTeamHeroData)
         {
-            var updatedOwnedHeroList = new List<PlayerOwnedHeroData>();
-            foreach (var ownedHeroData in _playerProgress.playerOwnedHeroList)
-            {
-                if(!string.Equals(currentTeamHeroData.id, ownedHeroData.id))   
-                        updatedOwnedHeroList.Add(ownedHeroData);
-            }
-
-            _playerProgress.playerOwnedHeroList = updatedOwnedHeroList;
+            if (_playerProgress.playerOwnedHeroList.Contains(currentTeamHeroData))
+                _playerProgress.playerOwnedHeroList.Remove(currentTeamHeroData);
         }
 
         public bool IsHeroAlreadyInCurrentTeam(PlayerOwnedHeroData heroData)
