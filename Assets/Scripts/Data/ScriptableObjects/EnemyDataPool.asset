@@ -14,14 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyDataList:
   - color: {r: 1, g: 0, b: 0, a: 1}
-    totalHp: 30
+    totalHp: 10
     minAttack: 1
     maxAttack: 3
   - color: {r: 0.34135032, g: 1, b: 0, a: 1}
-    totalHp: 25
+    totalHp: 15
     minAttack: 1
     maxAttack: 4
   - color: {r: 0.27095318, g: 0, b: 1, a: 1}
-    totalHp: 20
+    totalHp: 13
     minAttack: 2
     maxAttack: 5
