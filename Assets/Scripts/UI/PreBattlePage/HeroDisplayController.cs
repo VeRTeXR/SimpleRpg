@@ -7,6 +7,7 @@ using Utilities;
 
 namespace UI.PreBattlePage
 {
+    // This component controls the functionality of Player Hero that is being populate outside of Battle
     public class HeroDisplayController:MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IBroadcaster
     {
         [Header("Visual References")] 

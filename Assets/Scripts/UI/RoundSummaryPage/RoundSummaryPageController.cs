@@ -6,12 +6,12 @@ using UI.BattlePage;
 using UI.MainMenuPage;
 using UI.PreBattlePage;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Utilities;
 
 namespace UI.RoundSummaryPage
 {
+    //This component populate and controls the elements in RoundSummaryPage after battle finished
     public class RoundSummaryPageController : MonoBehaviour,ISubscriber, IRequiredPlayerDataController, IBroadcaster
     {
         [Header("Visual References")]
@@ -110,7 +110,6 @@ namespace UI.RoundSummaryPage
 
         private void TransitionBackToPreBattle()
         {
-            //TODO:: Handle no more hero left, transition back to start page
             layoutObject.SetActive(false);
             Signaler.Instance.Broadcast(this, new TransitionToPreBattle());
         }

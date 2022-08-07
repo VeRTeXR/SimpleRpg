@@ -9,6 +9,7 @@ namespace UI.HeroTooltip
 {
     public class HeroTooltipController : MonoBehaviour, ISubscriber
     {
+        //This component handling the generations of Hero Tooltip from PlayerOwnedHeroData
         [Header("Visual References")]        
         [SerializeField] private GameObject tooltipInstance;
         [SerializeField] private TextMeshProUGUI nameText;

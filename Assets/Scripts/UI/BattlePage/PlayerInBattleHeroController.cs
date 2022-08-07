@@ -1,5 +1,4 @@
-﻿using System;
-using echo17.Signaler.Core;
+﻿using echo17.Signaler.Core;
 using PlayerData;
 using UI.PreBattlePage;
 using UnityEngine;
@@ -9,6 +8,8 @@ using Utilities;
 
 namespace UI.BattlePage
 {
+    
+    //This component controls the interactions and visual feedback for Player Current Team Heroes that is being spawn into battles
     public class PlayerInBattleHeroController: MonoBehaviour, IBroadcaster, ISubscriber, IPointerDownHandler,IPointerUpHandler
     {
         [Header("Visual References")]
@@ -125,7 +126,7 @@ namespace UI.BattlePage
                 Signaler.Instance.Broadcast(this, new ShowUnitTooltip {ownedUnitData = _heroData, requesterObject = gameObject});
             else
             {
-                Signaler.Instance.Broadcast(this, new ClearBattleSelectionArrow());
+                Signaler.Instance.Broadcast(this, new ClearBattleSelection());
 
                 selectionOutline.transform.localScale = Vector3.zero;
                 selectionOutline.SetActive(true);

@@ -8,7 +8,7 @@ namespace Data
     {
         public string id;
         public string name;
-        public Color heroColor;
+        public Color color;
         public int health;
         public int attack;
     }

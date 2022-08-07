@@ -15,16 +15,16 @@ MonoBehaviour:
   heroDataList:
   - id: hero01
     name: red
-    heroColor: {r: 1, g: 0, b: 0, a: 1}
+    color: {r: 1, g: 0, b: 0, a: 1}
     health: 10
     attack: 5
   - id: hero02
     name: blue
-    heroColor: {r: 0.11532307, g: 0, b: 1, a: 1}
+    color: {r: 0, g: 0.007030964, b: 1, a: 1}
     health: 20
     attack: 3
   - id: hero03
     name: green
-    heroColor: {r: 0.029804826, g: 1, b: 0, a: 1}
+    color: {r: 0.24126458, g: 1, b: 0, a: 1}
     health: 15
     attack: 4

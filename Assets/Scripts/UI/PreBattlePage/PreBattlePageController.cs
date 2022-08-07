@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Diagnostics;
 using echo17.Signaler.Core;
 using PlayerData;
 using TMPro;
@@ -7,10 +6,10 @@ using UI.MainMenuPage;
 using UnityEngine;
 using UnityEngine.UI;
 using Utilities;
-using Debug = UnityEngine.Debug;
 
 namespace UI.PreBattlePage
 {
+    //This component populate current team heroes for display before enter a BattlePage or TeamSelectionPage
     public class PreBattlePageController : MonoBehaviour, ISubscriber, IBroadcaster, IRequiredPlayerDataController
     {
         [Header("Visual References")]

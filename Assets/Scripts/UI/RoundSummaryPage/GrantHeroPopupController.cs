@@ -1,7 +1,5 @@
-﻿using System;
-using Data;
+﻿using Data;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -26,7 +24,7 @@ namespace UI.RoundSummaryPage
 
         private void PopulateHeroData()
         {
-            heroIcon.color = _grantedHero.heroColor;
+            heroIcon.color = _grantedHero.color;
             heroName.text = _grantedHero.name;
         }
 

@@ -10,9 +10,7 @@ namespace UI.BattlePage
 
         public void SetFill(int maxHealth, int currentHealth)
         {
-            //Todo:: Tween value here!
-            _currentFill = (float)currentHealth/maxHealth;
-            
+            _currentFill = (float)currentHealth/maxHealth;        
             fillImage.fillAmount = _currentFill;
         }    
 

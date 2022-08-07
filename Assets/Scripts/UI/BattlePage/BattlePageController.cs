@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace UI.BattlePage
 {
+    //This component responsible for populating battles and handling of battle page elements
     public class BattlePageController : MonoBehaviour, ISubscriber,IBroadcaster, IRequiredPlayerDataController
     {
 
@@ -31,7 +32,7 @@ namespace UI.BattlePage
             Signaler.Instance.Subscribe<TransitionToPreBattle>(this, OnTransitionToPreBattle);
             Signaler.Instance.Subscribe<TransitionToTeamSelection>(this, OnTransitionToTeamSelection);
             Signaler.Instance.Subscribe<TransitionToBattle>(this, OnTransitionToBattle);
-            Signaler.Instance.Subscribe<ClearBattleSelectionArrow>(this, OnClearSelectionArrow);
+            Signaler.Instance.Subscribe<ClearBattleSelection>(this, OnClearSelection);
             Signaler.Instance.Subscribe<PlayerHeroKilled>(this, OnPlayerHeroKilled);
             Signaler.Instance.Broadcast(this, new RequestPlayerDataController{requester = this});
         }
@@ -70,12 +71,11 @@ namespace UI.BattlePage
             {
                 Exit();
                 Signaler.Instance.Broadcast(this, new BattleRoundOver{isPlayerWin = false});
-                //TODO:: Trigger round lose
             }
             return true;
         }
 
-        private bool OnClearSelectionArrow(ClearBattleSelectionArrow signal)
+        private bool OnClearSelection(ClearBattleSelection signal)
         {
             foreach (var playerHero in _inBattleHeroList) playerHero.ClearSelection();
             return true;

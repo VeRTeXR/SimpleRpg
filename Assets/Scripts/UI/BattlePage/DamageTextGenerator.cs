@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace UI.BattlePage
 {
+    //This component generate a generic damage text with provided animation attributes
     public class DamageTextGenerator: MonoBehaviour
     {
         [Header("Visual References")]

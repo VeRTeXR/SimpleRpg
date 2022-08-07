@@ -79,7 +79,7 @@ namespace PlayerData
                     id = heroUnit.id + "," + timestamp+","+Random.Range(float.MinValue, float.MaxValue),
                     level = 1,
                     name = heroUnit.name,
-                    color =  heroUnit.heroColor,
+                    color =  heroUnit.color,
                     maxHealth = heroUnit.health,
                     currentHealth = heroUnit.health,
                     attack = heroUnit.attack, 
@@ -94,9 +94,7 @@ namespace PlayerData
             var rngIndex = Random.Range(0, heroDataPool.heroDataList.Count);
             return heroDataPool.heroDataList[rngIndex]; 
         }
-
-       
-
+        
         public List<PlayerOwnedHeroData> GetCurrentTeamList()
         {
             return _playerProgress.currentTeam;

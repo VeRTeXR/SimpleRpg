@@ -6,6 +6,7 @@ using Random = UnityEngine.Random;
 
 namespace UI.BattlePage
 {
+    //This component controls the flow of Battle gameplay turns and perform logics according to each phase of the turn
     public class TurnTracker : MonoBehaviour, ISubscriber, IBroadcaster
     {
         [SerializeField] private TextMeshProUGUI turnText;
@@ -81,7 +82,7 @@ namespace UI.BattlePage
         {
             _selectedEnemy = signal.target;
             ApplyDamageToTarget();
-            Signaler.Instance.Broadcast(this, new ClearBattleSelectionArrow());
+            Signaler.Instance.Broadcast(this, new ClearBattleSelection());
             return true;
         }
 

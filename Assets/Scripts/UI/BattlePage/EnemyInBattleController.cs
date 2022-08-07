@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 namespace UI.BattlePage
 {
+    //This component controls the interactions and visual feedback for Enemy that is being spawn into battles
     public class EnemyInBattleController:MonoBehaviour, ISubscriber, IBroadcaster
     {
        
@@ -64,7 +65,7 @@ namespace UI.BattlePage
         {
             _battlePageController = battlePageController;
             _enemyData = enemyData;
-            enemyIcon.color = _enemyData.enemyColor;
+            enemyIcon.color = _enemyData.color;
             _currentHealth = _enemyData.totalHp;
             _healthBarController.SetFill(_enemyData.totalHp, _currentHealth);
             EnableOutline(false);
