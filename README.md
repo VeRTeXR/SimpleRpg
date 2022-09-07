@@ -1,4 +1,4 @@
-# TakeHomeTestRpg
+# SimpleRpg
 
 Unity version:
 - Unity 2021.3.7f1 LTS
